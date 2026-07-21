@@ -2,7 +2,7 @@
 
 A streamlined, dual-sided web application designed to help business owners manage bookings effortlessly while offering customers a frictionless, account-free scheduling experience.
 
----
+<img width="2536" height="1418" alt="image" src="https://github.com/user-attachments/assets/bd9281ef-15a0-4ff4-8eaa-90555588b5c0" />
 
 ## Motivation
 
