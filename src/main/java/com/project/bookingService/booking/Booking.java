@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,8 +37,8 @@ public class Booking {
     private String bookingServicesToBeProvided;
 
     @Column(name="client_first_name")
-    private String bookingClientFirstName;
+    private String clientFirstName;
 
     @Column(name="client_last_name")
-    private Timestamp bookingClientLastName;
+    private String clientLastName;
 }

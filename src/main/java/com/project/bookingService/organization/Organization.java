@@ -1,5 +1,6 @@
 package com.project.bookingService.organization;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.bookingService.booking.Booking;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class Organization {
     private Long ID;
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Booking> Bookings = new ArrayList<>();
 
     @Column(name="name")
