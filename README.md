@@ -1,6 +1,6 @@
 # Online Appointment Management System: fastBooking
 
-> A streamlined, dual-sided web application designed to help business owners manage bookings effortlessly while offering customers a frictionless, account-free scheduling experience.
+A streamlined, dual-sided web application designed to help business owners manage bookings effortlessly while offering customers a frictionless, account-free scheduling experience.
 
 ---
 
