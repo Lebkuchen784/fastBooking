@@ -23,9 +23,19 @@ public class WebController {
 
     private static final int BOOKINGS_PER_PAGE = 12; // pagination
 
+    @GetMapping("/")
+    ModelAndView index() {
+        return new ModelAndView("index");
+    }
+
+    @GetMapping("/register")
+    ModelAndView register() {
+        return new ModelAndView("signup");
+    }
+
     @GetMapping("/owners/{ownerId}")
-    ModelAndView index(@PathVariable String ownerId) {
-        ModelAndView mav = new ModelAndView("index");
+    ModelAndView dashboard(@PathVariable String ownerId) {
+        ModelAndView mav = new ModelAndView("dashboard");
 
         if (ownerService.getNumberOfOwners() != 0 && organizationService.getNumberOfOrganizations() != 0) {
             mav.addObject("owner", ownerService.getOwner(ownerId));

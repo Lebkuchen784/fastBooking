@@ -48,6 +48,20 @@ body {
     letter-spacing: -0.5px;
 }
 
+.signup-header {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.signup-header h1 {
+    color: var(--accent-color);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
 /* Layout Container */
 .dashboard-container {
     width: 100%;
@@ -92,6 +106,67 @@ body {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     align-items: start;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 640px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    align-content: center;
+    align-self: center;
+}
+
+.login-fields {
+    margin-top: 0.25rem;
+    padding-top: 1rem;
+    padding-bottom: 0.25rem;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+}
+
+/* Center and space out form contents */
+.login-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Ensure label wrapper spans full width of container */
+.login-fields {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+/* Input Styling */
+.login-form {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 1rem;
+    font-family: var(--font-main), system-ui;
+    color: var(--text-main);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Input Focus State */
+.login-form:focus {
+    border-color: var(--text-main);
+    box-shadow: 0 0 0 2px rgba(241, 245, 249, 0.15);
 }
 
 /* Responsive collapse for smaller screens */
@@ -185,7 +260,7 @@ body {
 .table-actions {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    padding-bottom: 0.25rem; /* Balances space above and below button */
+    padding-bottom: 0.25rem;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -202,7 +277,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    line-height: 1; /* Prevents font line-height from shifting text downward */
+    line-height: 1;
     padding: 0.75rem 1.25rem;
     background-color: transparent;
     color: var(--text-main);

@@ -6,8 +6,7 @@ import com.project.bookingService.organization.Organization;
 import com.project.bookingService.user.businessOwner.Owner;
 import com.project.bookingService.user.businessOwner.OwnerRepository;
 import com.project.bookingService.user.businessOwner.PaymentMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,7 +23,7 @@ import java.util.random.RandomGenerator;
 @ConditionalOnProperty(name = "sample-data.enabled", havingValue = "true")
 public class RandomDataGenerator implements ApplicationRunner {
 
-    private static final int BOOKING_COUNT = 70;
+    private static final int BOOKING_COUNT = 50;
     private static final int BOOKINGS_PER_DAY = 5;
 
     private static final String[] FIRST_NAMES = {
@@ -51,7 +50,7 @@ public class RandomDataGenerator implements ApplicationRunner {
 
     @Override
     @Transactional
-    public void run(ApplicationArguments args) {
+    public void run(@NonNull ApplicationArguments args) {
         if (ownerRepository.count() > 0) {
             return;
         }
@@ -105,7 +104,7 @@ public class RandomDataGenerator implements ApplicationRunner {
             booking.setClientFirstName(randomElement(FIRST_NAMES));
             booking.setClientLastName(randomElement(LAST_NAMES));
             booking.setBookingServicesToBeProvided(randomElement(SERVICES));
-            booking.setBookingDurationInMinutes(randomElement(DURATIONS));
+            booking.setBookingDurationInMinutes(randomElement());
             booking.setBookingIsPaid(random.nextBoolean());
             booking.setBookingDateAndTime(
                     firstBookingDate.plusDays(dayOffset).atTime(8 + (slotIndex * 2), 0)
@@ -120,7 +119,7 @@ public class RandomDataGenerator implements ApplicationRunner {
         return values[random.nextInt(values.length)];
     }
 
-    private int randomElement(int[] values) {
-        return values[random.nextInt(values.length)];
+    private int randomElement() {
+        return RandomDataGenerator.DURATIONS[random.nextInt(RandomDataGenerator.DURATIONS.length)];
     }
 }
