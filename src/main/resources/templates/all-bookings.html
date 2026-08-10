@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>fastBooking: All bookings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="dashboard-header" style="position: relative;">
+    <a th:href="@{/owners/{ownerId}(ownerId=${owner.ID})}" class="btn-secondary" style="position: absolute; left: 0; top: 0;">&larr; Back</a>
+    <h1>All bookings</h1>
+</header>
+
+<div class="all-bookings-container">
+    <main class="dashboard-card">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Booking ID</th>
+                    <th>Service</th>
+                    <th>Date and Time</th>
+                    <th>Payment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${!bookingsPage.hasContent()}"> /* Should not be reachable under normal conditions */
+                    <td colspan="5" class="empty-state">There are no bookings available to show.</td>
+                </tr>
+                <tr th:each="booking : ${bookingsPage.content}">
+                    <td th:text="${booking.getClientFirstName() + ' ' + booking.getClientLastName()}"></td>
+                    <td class="mono-text" th:text="${booking.getID()}"></td>
+                    <td th:text="${booking.getBookingServicesToBeProvided()}"></td>
+                    <td th:text="${#temporals.format(booking.getBookingDateAndTime(), 'yyyy-MM-dd HH:mm')}"></td>
+                    <td>
+                        <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid" th:text="'COMPLETED'"></span>
+                        <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid" th:text="'PENDING'"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <nav class="pagination"
+             th:if="${bookingsPage.totalPages > 0}">
+            <a class="btn-secondary"
+               rel="prev"
+               th:if="${bookingsPage.hasPrevious()}"
+               th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number - 1})}">
+                Previous
+            </a>
+            <span class="btn-secondary pagination-disabled"
+                  th:if="${!bookingsPage.hasPrevious()}">
+                Previous
+            </span>
+
+            <span class="page-indicator"
+                  th:text="|Page ${bookingsPage.number + 1} of ${bookingsPage.totalPages}|">
+                Page 1 of 1
+            </span>
+
+            <a class="btn-secondary"
+               rel="next"
+               th:if="${bookingsPage.hasNext()}"
+               th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number + 1})}">
+                Next
+            </a>
+            <span class="btn-secondary pagination-disabled"
+                  th:if="${!bookingsPage.hasNext()}">
+                Next
+            </span>
+        </nav>
+    </main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cells = document.querySelectorAll('.data-table td');
+
+        cells.forEach(cell => {
+            if (cell.classList.contains('empty-state')) return;
+
+            cell.addEventListener('click', () => {
+                cell.classList.toggle('expanded');
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### PDF files and some other things ###
+other-files/

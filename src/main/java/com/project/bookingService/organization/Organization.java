@@ -1,31 +1,48 @@
 package com.project.bookingService.organization;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.bookingService.booking.Booking;
+import com.project.bookingService.user.businessOwner.Owner;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.ByteBuffer;
+import java.time.LocalTime;
+import java.util.Base64;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="organization")
 public class Organization {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ID;
+    private String ID;
+
+    @PrePersist
+    private void generateId() {
+        if (this.ID == null) {
+            UUID uuid = UUID.randomUUID();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(16);
+            byteBuffer.putLong(uuid.getMostSignificantBits());
+            byteBuffer.putLong(uuid.getLeastSignificantBits());
+            this.ID = Base64.getUrlEncoder().withoutPadding().encodeToString(byteBuffer.array());
+        }
+    }
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Booking> Bookings = new ArrayList<>();
+    @JsonManagedReference("organization-bookings")
+    private Set<Booking> Bookings = new HashSet<>();
+
+    @OneToOne(mappedBy = "organization")
+    @JsonBackReference("owner-organization")
+    private Owner owner;
 
     @Column(name="name")
     private String businessName;
@@ -40,8 +57,19 @@ public class Organization {
     private String businessAddress;
 
     @Column(name="opening_hour")
-    private Timestamp businessOpeningHour;
+    private LocalTime businessOpeningHour;
 
     @Column(name="closing_hour")
-    private Timestamp businessClosingHour;
+    private LocalTime businessClosingHour;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Organization organization)) return false;
+        return Objects.equals(ID, organization.ID) && Objects.equals(owner, organization.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
