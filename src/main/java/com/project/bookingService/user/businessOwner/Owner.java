@@ -19,7 +19,7 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String ID;
 
-    // Not necessary
+    // Specifying the column name is not necessary
     @Column(name="first_name")
     private String firstName;
 

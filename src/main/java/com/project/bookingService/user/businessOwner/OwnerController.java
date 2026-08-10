@@ -48,15 +48,12 @@ public class OwnerController {
     }
 
     @PostMapping("/{owner_id}")
-    public ResponseEntity<Owner> updateOwner(
-            @PathVariable String owner_id,
-            @RequestBody OwnerRegistrationDTO request) {
+    public ResponseEntity<Owner> updateOwner(@PathVariable String owner_id, @RequestBody OwnerRegistrationDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(ownerService.updateOwner(owner_id, request));
     }
 
     @PostMapping("/{owner_id}/updateOrg")
-    public ResponseEntity<Organization> updateOwnerOrganization(@PathVariable String owner_id,
-                                                         @RequestBody OrganizationCreationDTO requestBodyForOrganization) {
+    public ResponseEntity<Organization> updateOwnerOrganization(@PathVariable String owner_id, @RequestBody OrganizationCreationDTO requestBodyForOrganization) {
         Organization result = ownerService.updateOwnerOrganization(owner_id, requestBodyForOrganization);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }

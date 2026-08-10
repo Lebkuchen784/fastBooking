@@ -61,11 +61,10 @@
 
             <span class="page-indicator"
                   th:text="|Page ${bookingsPage.number + 1} of ${bookingsPage.totalPages}|">
-                Page 1 of 1
+                Page 69 of 69
             </span>
 
             <a class="btn-secondary"
-               rel="next"
                th:if="${bookingsPage.hasNext()}"
                th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number + 1})}">
                 Next
