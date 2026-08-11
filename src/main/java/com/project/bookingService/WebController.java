@@ -30,7 +30,7 @@ public class WebController {
 
     @GetMapping("/register")
     ModelAndView register() {
-        return new ModelAndView("signup");
+        return new ModelAndView("register");
     }
 
     @GetMapping("/owners/{ownerId}")

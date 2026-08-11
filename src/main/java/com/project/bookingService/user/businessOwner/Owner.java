@@ -5,7 +5,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.bookingService.organization.Organization;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.CredentialsContainer;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="owner")
-public class Owner {
+public class Owner implements UserDetails, CredentialsContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String ID;
@@ -31,8 +36,8 @@ public class Owner {
     private PaymentMethod paymentMethod;
 
     @JsonIgnore
-    @Column(name="password_hash")
-    private String passwordHash;
+    @Column(name="password")
+    private String password;
 
     @Column(name="email_address", unique = true)
     private String emailAddress;
@@ -65,5 +70,41 @@ public class Owner {
     @Override
     public String toString() {
         return this.firstName + " " + this.lastName + ", " + this.emailAddress;
+    }
+
+    // Security stuff
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(); // Don't need any, I only have "owner"
+    }
+
+    @Override
+    public String getUsername() {
+        return this.emailAddress;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
+
+    @Override
+    public void eraseCredentials() {
+        this.password = null;
     }
 }

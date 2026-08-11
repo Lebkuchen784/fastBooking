@@ -71,7 +71,7 @@ public class RandomDataGenerator implements ApplicationRunner {
         owner.setFirstName("Joe");
         owner.setLastName("Mama");
         owner.setEmailAddress("email@example.com");
-        owner.setPasswordHash("123456789");
+        owner.setPassword("1234");
         owner.setPaymentMethod(PaymentMethod.CREDIT_CARD);
         owner.setAccountStatus(true);
         owner.setTypeOfBusiness("67 services");

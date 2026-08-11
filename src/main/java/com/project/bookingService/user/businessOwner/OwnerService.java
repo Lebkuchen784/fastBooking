@@ -3,6 +3,11 @@ package com.project.bookingService.user.businessOwner;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
 import com.project.bookingService.organization.OrganizationRepository;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,14 +15,26 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
-public class OwnerService {
+public class OwnerService implements UserDetailsService {
 
     private final OwnerRepository ownerRepository;
-    private final OrganizationRepository organizationRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public OwnerService(OwnerRepository ownerRepository, OrganizationRepository organizationRepository) {
+    public OwnerService(OwnerRepository ownerRepository, PasswordEncoder passwordEncoder) {
         this.ownerRepository = ownerRepository;
-        this.organizationRepository = organizationRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<Owner> owner = ownerRepository.findByEmailAddress(email);
+        if (owner.isEmpty()) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+        return new User(
+                owner.get().getEmailAddress(),
+                owner.get().getPassword(),
+                owner.get().getAuthorities());
     }
 
     public Long getNumberOfOwners() {
@@ -41,7 +58,7 @@ public class OwnerService {
             return null;
         }
         newOwner.setPaymentMethod(requestObject.getPaymentMethod());
-        newOwner.setPasswordHash(requestObject.getPassword());
+        newOwner.setPassword(passwordEncoder.encode(requestObject.getPassword()));
         newOwner.setAccountStatus(requestObject.getAccountStatus());
         newOwner.setTypeOfBusiness(requestObject.getTypeOfBusiness());
         newOwner.setBusinessAddress(requestObject.getOwnerBusinessAddress());
@@ -77,7 +94,7 @@ public class OwnerService {
         fetchedOwner.setLastName(requestObject.getLastName());
         fetchedOwner.setEmailAddress(requestObject.getEmailAddress());
         fetchedOwner.setPaymentMethod(requestObject.getPaymentMethod());
-        fetchedOwner.setPasswordHash(requestObject.getPassword());
+        fetchedOwner.setPassword(requestObject.getPassword());
         fetchedOwner.setAccountStatus(requestObject.getAccountStatus());
         fetchedOwner.setTypeOfBusiness(requestObject.getTypeOfBusiness());
         fetchedOwner.setBusinessAddress(requestObject.getOwnerBusinessAddress());

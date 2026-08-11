@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface OwnerRepository extends JpaRepository<Owner, String> {
     boolean existsByEmailAddress(String emailAddress);
+    Optional<Owner> findByEmailAddress(String emailAddress);
 }

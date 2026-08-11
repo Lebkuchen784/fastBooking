@@ -1,19 +1,39 @@
 package com.project.bookingService.user.businessOwner;
 
+import com.project.bookingService.config.authentication.AuthRequest;
+import com.project.bookingService.config.authentication.JWTUtility;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/owners")
+@RequiredArgsConstructor
 public class OwnerController {
 
     private final OwnerService ownerService;
+    private final JWTUtility jwtUtility;
+    private AuthenticationManager authenticationManager;
 
-    public OwnerController(OwnerService ownerService) {
-        this.ownerService = ownerService;
+    @PostMapping("/genToken")
+    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+        );
+
+        if (authentication.isAuthenticated()) {
+            return jwtUtility.generateToken(authRequest.getEmail());
+        } else {
+            throw new UsernameNotFoundException("Invalid username or password");
+        }
     }
 
     @GetMapping("/getOwner/{owner_id}")
@@ -27,12 +47,9 @@ public class OwnerController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Owner> register(@RequestBody OwnerRegistrationDTO request) {
-        Owner result = ownerService.registerOwner(request);
-        if (result == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    public RedirectView register(@ModelAttribute OwnerRegistrationDTO request) {
+        ownerService.registerOwner(request);
+        return new RedirectView("/");
     }
 
     @PostMapping("/remove")

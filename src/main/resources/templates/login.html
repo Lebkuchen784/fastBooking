@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>fastBooking: Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="dashboard-header">
+    <h1>Welcome to fastBooking</h1>
+</header>
+<div class="login-container">
+    <main class="dashboard-card">
+        <h2 class="dashboard-header">Enter your login information</h2>
+        <form th:action="@{/login}" method="post" class="login-form-container">
+            <label class="login-fields">
+                <input class="login-form" type="email" name="email" placeholder="Email address" required>
+            </label>
+            <label class="login-fields">
+                <input class="login-form" type="password" name="password" placeholder="Password" required>
+            </label>
+            <div>
+                <input type="submit" class="btn-secondary" value="Submit">
+                <a th:href="@{/register}" class="btn-secondary" style="position: relative">Register</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>
