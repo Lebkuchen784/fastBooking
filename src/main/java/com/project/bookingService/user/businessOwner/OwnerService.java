@@ -2,7 +2,7 @@ package com.project.bookingService.user.businessOwner;
 
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
-import com.project.bookingService.organization.OrganizationRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +26,7 @@ public class OwnerService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
         Optional<Owner> owner = ownerRepository.findByEmailAddress(email);
         if (owner.isEmpty()) {
             throw new UsernameNotFoundException("User not found with email: " + email);
