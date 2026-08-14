@@ -6,7 +6,7 @@ A streamlined, dual-sided web application designed to help business owners manag
 
 ## Motivation
 
-Managing appointments shouldn't be a hassle for small business owners, nor should booking one require customers to jump through registration hoops. 
+Managing appointments should not be a hassle for small business owners, nor should booking one require customers to jump through registration hoops. 
 
 This project bridges that gap by providing:
 1. **Business owners** with an intuitive dashboard to set up services and manage schedules.
@@ -17,7 +17,7 @@ This project bridges that gap by providing:
 ## Key Features
 
 ### Business Owner Portal
-- **Account Management:** Register and configure organization/business details.
+- **Account Management:** Register and configure organization and business details.
 - **Service Configuration:** Define services offered, including durations, pricing, and descriptions.
 - **Shareable Booking Link:** Generate a unique public link to share on social media, websites, or messaging apps.
 - **Booking Overview:** Dashboard view of upcoming appointments, schedule status, and customer details.
@@ -30,16 +30,47 @@ This project bridges that gap by providing:
 
 ---
 
-## Future Roadmap
+## Architecture & Technologies
 
-- [ ] **Staff Management:** Allow owners to assign specific team members to services and schedules.
-- [ ] **Notifications & Reminders:** Automated email/SMS notifications for upcoming appointments.
-- [ ] **Calendar Integration:** Sync with Google Calendar, iCal, and Outlook.
-- [ ] **Custom Branding:** Allow business owners to customize colors and logos on their booking page.
+This application is built using a modern Java tech stack, incorporating batch processing concepts:
+
+- **Backend Framework:** Spring Boot (Java 21)
+- **Data Access:** Spring Data JPA, Hibernate, Spring JDBC
+- **Database:** PostgreSQL
+- **Security:** Spring Security, JWT (JSON Web Tokens)
+- **Frontend / Templating:** Thymeleaf
+- **Batch Processing:** Spring Batch
+- **API Documentation & Testing:** Spring REST Docs, Spring Boot Test
 
 ---
 
-## Built With
+## Getting Started
 
-- **Backend:** Springboot / JPA / Hibernate
-- **Database:** PostgreSQL
+### Prerequisites
+- Java 21 or higher
+- PostgreSQL
+- Maven
+
+### Installation & Running Locally
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+
+2. Configure the database properties in your `application.properties` or `application.yml`.
+
+3. Build and run the application using Maven:
+   ```bash
+   ./mvnw clean install
+   ./mvnw spring-boot:run
+   ```
+
+---
+
+## Future Roadmap
+
+- [ ] **Staff Management:** Allow owners to assign specific team members to services and schedules.
+- [ ] **Notifications & Reminders:** Automated email confirmations and notifications for upcoming appointments.
+- [ ] **Calendar Integration:** Sync with Google Calendar, iCal, and Outlook.
+- [ ] **Custom Branding:** Allow business owners to customize colors and logos on their booking page.
