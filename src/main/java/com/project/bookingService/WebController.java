@@ -45,14 +45,13 @@ public class WebController {
         if (organizationService.getNumberOfBookings() != 0) {
             String organizationId = organizationService.getOrganizationIdByOwnerId(ownerId);
             if (organizationId != null) {
-                Pageable pageable = PageRequest.of(0, 9, Sort.by(Sort.Direction.ASC, "bookingDateAndTime"));
+                Pageable pageable = PageRequest.of(0, 8, Sort.by(Sort.Direction.ASC, "bookingDateAndTime"));
                 Page<Booking> recentBookingsPage = organizationService.getOrganizationBookingsByOwnerId(ownerId, pageable);
                 if (recentBookingsPage.hasContent()) {
                     mav.addObject("bookings", recentBookingsPage.getContent());
                 }
             }
         }
-
         return mav;
     }
 

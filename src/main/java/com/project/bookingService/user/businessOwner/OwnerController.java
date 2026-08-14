@@ -1,18 +1,13 @@
 package com.project.bookingService.user.businessOwner;
 
-import com.project.bookingService.config.authentication.AuthRequest;
-import com.project.bookingService.config.authentication.JWTUtility;
+import com.project.bookingService.config.authentication.AuthRequestData;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/owners")
@@ -20,20 +15,10 @@ import org.springframework.web.servlet.view.RedirectView;
 public class OwnerController {
 
     private final OwnerService ownerService;
-    private final JWTUtility jwtUtility;
-    private AuthenticationManager authenticationManager;
 
-    @PostMapping("/genToken")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
-        );
-
-        if (authentication.isAuthenticated()) {
-            return jwtUtility.generateToken(authRequest.getEmail());
-        } else {
-            throw new UsernameNotFoundException("Invalid username or password");
-        }
+    @PostMapping("/generateToken")
+    public java.util.Map<String, String> authenticateAndGetToken(@RequestBody AuthRequestData authRequestData, HttpServletResponse response) {
+        return ownerService.generateJWTToken(authRequestData, response);
     }
 
     @GetMapping("/getOwner/{owner_id}")
@@ -47,9 +32,12 @@ public class OwnerController {
     }
 
     @PostMapping("/register")
-    public RedirectView register(@ModelAttribute OwnerRegistrationDTO request) {
-        ownerService.registerOwner(request);
-        return new RedirectView("/");
+    public ResponseEntity<Owner> register(@RequestBody OwnerRegistrationDTO request) {
+        Owner saved = ownerService.registerOwner(request);
+        if (saved == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PostMapping("/remove")

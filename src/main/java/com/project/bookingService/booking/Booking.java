@@ -27,7 +27,7 @@ public class Booking {
     @Column(name="is_paid")
     private Boolean bookingIsPaid;
 
-    @Column(name="date_and_time", unique = true)
+    @Column(name="date_and_time")
     private LocalDateTime bookingDateAndTime;
 
     @Column(name="duration")

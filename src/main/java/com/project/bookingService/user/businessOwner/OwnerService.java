@@ -1,8 +1,16 @@
 package com.project.bookingService.user.businessOwner;
 
+import com.project.bookingService.config.authentication.AuthRequestData;
+import com.project.bookingService.config.authentication.JWTUtility;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -19,14 +28,18 @@ public class OwnerService implements UserDetailsService {
 
     private final OwnerRepository ownerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JWTUtility jwtUtility;
+    private final AuthenticationManager authenticationManager;
 
-    public OwnerService(OwnerRepository ownerRepository, PasswordEncoder passwordEncoder) {
+    public OwnerService(OwnerRepository ownerRepository, @Lazy PasswordEncoder passwordEncoder, JWTUtility jwtUtility,@Lazy AuthenticationManager authenticationManager) {
         this.ownerRepository = ownerRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtility = jwtUtility;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
-    public UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
+    public @NonNull UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
         Optional<Owner> owner = ownerRepository.findByEmailAddress(email);
         if (owner.isEmpty()) {
             throw new UsernameNotFoundException("User not found with email: " + email);
@@ -34,11 +47,39 @@ public class OwnerService implements UserDetailsService {
         return new User(
                 owner.get().getEmailAddress(),
                 owner.get().getPassword(),
-                owner.get().getAuthorities());
+                owner.get().getAuthorities()); // not necessary
+    }
+
+    public Map<String, String> generateJWTToken(AuthRequestData data, HttpServletResponse response) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword())
+        );
+
+        if (authentication.isAuthenticated()) {
+            String token = jwtUtility.generateToken(data.getEmail());
+            Owner owner = this.getOwnerByEmail(data.getEmail());
+
+            Cookie jwtCookie = new Cookie("jwtToken", token);
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setSecure(false); // for local host
+            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(60 * 60 * 24); // 24 hours
+
+            response.addCookie(jwtCookie);
+
+            return Map.of("ownerId", owner.getID());
+        } else {
+            throw new UsernameNotFoundException("Invalid email or password.");
+        }
     }
 
     public Long getNumberOfOwners() {
         return ownerRepository.count();
+    }
+
+    public Owner getOwnerByEmail(String email) {
+        return ownerRepository.findByEmailAddress(email)
+                .orElseThrow(() -> new IllegalArgumentException("Owner not found with email: " + email));
     }
 
     @Transactional
@@ -53,7 +94,7 @@ public class OwnerService implements UserDetailsService {
         newOwner.setFirstName(requestObject.getFirstName());
         newOwner.setLastName(requestObject.getLastName());
         newOwner.setEmailAddress(requestObject.getEmailAddress());
-        if (requestObject.getPaymentMethod() == null || !requestObject.getPaymentMethod().getDeclaringClass().isEnum()) {
+        if (requestObject.getPaymentMethod() == null) {
             System.out.println("Invalid payment method.");
             return null;
         }

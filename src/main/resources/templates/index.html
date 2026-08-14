@@ -17,18 +17,65 @@
     <main class="dashboard-card">
         <h2 class="dashboard-header">Enter your login information</h2>
         <div class="login-form-container">
-        <label class="login-fields">
-            <input class="login-form" type="email" name="email" placeholder="Email address">
-        </label>
-        <label class="login-fields">
-            <input class="login-form" type="password" name="password" placeholder="Password">
-        </label>
-            <div>
-                <input type="submit" class="btn-secondary" value="Submit">
-                <a th:href="@{/register}" class="btn-secondary" style="position: relative">Register</a>
+            <label class="login-fields">
+                <input id="email" class="login-form" type="email" name="email" placeholder="Email address" required>
+            </label>
+            <label class="login-fields">
+                <input id="password" class="login-form" type="password" name="password" placeholder="Password" required>
+            </label>
+            <div style="display: flex; gap: 1rem; justify-content: center; width: 100%; margin-top: 1rem;">
+                <button type="button" id="loginButton" class="button" onclick="loggingInFunction()">Submit</button>
+                <a th:href="@{/register}" class="button">Register</a>
             </div>
-    </div>
+        </div>
     </main>
 </div>
+
+<script>
+    async function loggingInFunction() {
+        const button = document.getElementById('loginButton');
+        if (!button) return;
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        button.disabled = true;
+        button.textContent = 'Working...';
+
+        if (!email || !password) {
+            window.alert('Enter your email and password first.');
+            button.disabled = false;
+            button.textContent = "Submit";
+            return;
+        }
+
+        try {
+            const response = await fetch('/owners/generateToken', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!response.ok) {
+                window.alert('Invalid email or password.');
+                button.disabled = false;
+                button.textContent = 'Submit';
+                return;
+            }
+
+            const data = await response.json();
+            window.location.href = '/owners/' + data.ownerId;
+        } catch (e) {
+            window.alert('Error during login.');
+            button.disabled = false;
+            button.textContent = 'Submit';
+        }
+    }
+    document.getElementById('password').addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById("loginButton").click();
+        }
+    });
+</script>
 </body>
 </html>

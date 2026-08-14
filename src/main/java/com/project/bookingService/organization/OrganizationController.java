@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -14,9 +13,21 @@ import java.util.Set;
 public class OrganizationController {
 
     private final OrganizationService organizationService;
+    private final com.project.bookingService.config.RandomDataGenerator randomDataGenerator;
 
-    public OrganizationController(OrganizationService organizationService) {
+    public OrganizationController(OrganizationService organizationService, com.project.bookingService.config.RandomDataGenerator randomDataGenerator) {
         this.organizationService = organizationService;
+        this.randomDataGenerator = randomDataGenerator;
+    }
+
+    @PostMapping("/{owner_id}/generateMockBookings")
+    public ResponseEntity<Void> generateTestBookings(@PathVariable String owner_id) {
+        Organization result = organizationService.getOrganizationByOwnerId(owner_id);
+        if (result != null) {
+            randomDataGenerator.createBookings(result);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping("/{owner_id}")

@@ -1,97 +1,144 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>fastBooking: Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
-    <header class="dashboard-header">
-        <h1>Dashboard</h1>
-    </header>
-    <div class="dashboard-container">
-        <main class="dashboard-card">
-            <h2>Recent Bookings</h2>
-            <div class="table-responsive">
-                <table class="dashboard-data-table">
-                    <thead>
-                        <tr>
-                            <th>Client</th>
-                            <th>Booking ID</th>
-                            <th>Service</th>
-                            <th>Date and Time</th>
-                            <th>Payment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:if="${bookings == null or bookings.isEmpty()}">
-                            <td colspan="5" class="empty-state">There are no bookings available to show.</td>
-                        </tr>
-                        <tr th:each="booking, iteration : ${bookings}" th:if="${iteration.index lt 8}">
-                            <td th:text="${booking.getClientFirstName() + ' ' + booking.getClientLastName()}"></td>
-                            <td class="mono-text" th:text="${booking.getID()}"></td>
-                            <td th:text="${booking.getBookingServicesToBeProvided()}"></td>
-                            <td th:text="${#temporals.format(booking.getBookingDateAndTime(), 'yyyy-MM-dd HH:mm')}"></td>
-                            <td>
-                                <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid" th:text="'COMPLETED'"></span>
-                                <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid" th:text="'PENDING'"></span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+<header class="dashboard-header" style="position: relative;">
+    <h1>Dashboard</h1>
+    <form th:action="@{/logout}" method="post" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%);">
+        <button type="submit" class="button">Log out</button>
+    </form>
+    <button type="button" class="button" id="addMockData" th:ownerId="${organization.getOwner().getID()}" onclick="addMockData(this)"
+            style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">Add mock data
+    </button>
+</header>
+<div class="dashboard-container">
+    <main class="dashboard-card">
+        <h2>Upcoming bookings</h2>
+        <div class="table-responsive">
+            <table class="dashboard-data-table">
+                <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Booking ID</th>
+                    <th>Service</th>
+                    <th>Date and Time</th>
+                    <th>Payment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${bookings == null or bookings.isEmpty()}">
+                    <td colspan="5" class="empty-state">There are no bookings available to show.</td>
+                </tr>
+                <tr th:each="booking, iteration : ${bookings}" th:if="${iteration.index lt 8}">
+                    <td th:text="${booking.getClientFirstName() + ' ' + booking.getClientLastName()}"></td>
+                    <td class="mono-text" th:text="${booking.getID()}"></td>
+                    <td th:text="${booking.getBookingServicesToBeProvided()}"></td>
+                    <td>
+                        <span th:text="${#temporals.format(booking.getBookingDateAndTime(), 'dd-MM-yyyy')}"></span>
+                        <br/>
+                        <span th:text="|${#temporals.format(booking.getBookingDateAndTime(), 'HH:mm')} - ${#temporals.format(booking.getBookingDateAndTime().plusMinutes(booking.getBookingDurationInMinutes()), 'HH:mm')}|"></span>
+                    </td>
+                    <td>
+                        <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid"
+                              th:text="'COMPLETED'"></span>
+                        <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid"
+                              th:text="'PENDING'"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-            <div class="table-actions" th:if="${bookings != null and bookings.size() > 8}">
-                <a th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=0)}" class="btn-secondary">Show all bookings</a>
-            </div>
-        </main>
+        <div class="table-actions" th:if="${bookings != null and bookings.size() > 7}">
+            <a th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=0)}" class="button">Show all bookings</a>
+        </div>
+    </main>
 
-        <aside class="dashboard-card sidebar" th:if="${organization == null}">
-            <span class="empty-state-left-little-padding">No data available for the organization.</span>
-        </aside>
-        <aside class="dashboard-card sidebar" th:if="${organization != null}">
-            <h2>Organization Details</h2>
-            <ul class="org-details-list">
-                <li>
-                    <strong>Organization ID</strong> 
-                    <span class="mono-text" th:text="${organization.getID()}"></span>
-                </li>
-                <li>
-                    <strong>Name</strong> 
-                    <span th:text="${organization.getBusinessName()}"></span>
-                </li>
-                <li>
-                    <strong>Description</strong> 
-                    <span th:text="${organization.getBusinessDescription()}"></span>
-                </li>
-                <li>
-                    <strong>Address</strong> 
-                    <span th:text="${organization.getBusinessAddress()}"></span>
-                </li>
-                <li>
-                    <strong>Employees</strong> 
-                    <span th:text="${organization.getBusinessNumberOfEmployees()}"></span>
-                </li>
-                <li>
-                    <strong>Opening Hours</strong> 
-                    <span th:text="${organization.getBusinessOpeningHour()}"></span>
-                </li>
-                <li>
-                    <strong>Closing Hours</strong> 
-                    <span th:text="${organization.getBusinessClosingHour()}"></span>
-                </li>
-                <li>
-                    <strong>Owner details</strong>
-                    <span th:text="${organization.getOwner().toString()}"></span>
-                    <span th:text="|ID in the database: ${organization.getOwner().getID()}|"></span>
-                </li>
-            </ul>
-        </aside>
-        
-    </div>
+    <aside class="dashboard-card sidebar" th:if="${organization == null}">
+        <span class="empty-state-left-little-padding">No data available for the organization.</span>
+    </aside>
+    <aside class="dashboard-card sidebar" th:if="${organization != null}">
+        <h2>Organization details</h2>
+        <ul class="org-details-list">
+            <li>
+                <strong>Organization ID</strong>
+                <span class="mono-text" th:text="${organization.getID()}"></span>
+            </li>
+            <li>
+                <strong>Name</strong>
+                <span th:text="${organization.getBusinessName()}"></span>
+            </li>
+            <li>
+                <strong>Description</strong>
+                <span th:text="${organization.getBusinessDescription()}"></span>
+            </li>
+            <li>
+                <strong>Address</strong>
+                <span th:text="${organization.getBusinessAddress()}"></span>
+            </li>
+            <li>
+                <strong>Employees</strong>
+                <span th:text="${organization.getBusinessNumberOfEmployees()}"></span>
+            </li>
+            <li>
+                <strong>Opening Hours</strong>
+                <span th:text="${organization.getBusinessOpeningHour()}"></span>
+            </li>
+            <li>
+                <strong>Closing Hours</strong>
+                <span th:text="${organization.getBusinessClosingHour()}"></span>
+            </li>
+            <li>
+                <strong>Owner details</strong>
+                <span th:text="${organization.getOwner().toString()}"></span>
+                <span th:text="|ID in the database: ${organization.getOwner().getID()}|"></span>
+            </li>
+        </ul>
+    </aside>
+
+</div>
+
+<script>
+    async function addMockData() {
+        const button = document.getElementById('addMockData');
+        if (!button) return;
+        const ownerId = button.getAttribute('ownerId');
+        button.disabled = true;
+        button.textContent = 'Working...';
+
+        try {
+        const response = await fetch(`/organizations/${ownerId}/generateMockBookings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+            if (response.ok) {
+                button.textContent = 'Success';
+                button.style.backgroundColor = '#28a745';
+                await new Promise(resolve => setTimeout(resolve, 500));
+                window.location.reload();
+            } else {
+                window.alert('Something went wrong: ' + response.status);
+                button.disabled = false;
+                button.textContent = 'Add mock data';
+            }
+        } catch (e) {
+            window.alert('Network error.');
+            button.disabled = false;
+            button.textContent = 'Add mock data';
+        }
+    }
+</script>
 </body>
 </html>

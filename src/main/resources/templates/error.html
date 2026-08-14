@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>fastBooking: Error</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="error-header">
+    <h1>Something went wrong</h1>
+</header>
+<div class="login-container">
+    <main class="dashboard-card">
+        <h2 class="dashboard-header" th:text="${status != null ? status + ' ' + error : 'Unknown Error'}">Error</h2>
+        <div class="login-form-container" style="text-align: center;">
+            <p th:if="${message}" th:text="${message}" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
+            <p th:if="${path}" style="font-family: var(--font-mono),sans-serif; font-size: 0.9em; color: var(--text-muted); margin-bottom: 1.5rem;">
+                Path: <span th:text="${path}"></span>
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center; width: 100%; margin-top: 1rem;">
+                <a th:href="@{/}" class="button">Back to home page</a>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
