@@ -1,19 +1,24 @@
 package com.project.bookingService.user.businessOwner;
 
+import com.project.bookingService.config.authentication.AuthRequestData;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/owners")
+@RequiredArgsConstructor
 public class OwnerController {
 
     private final OwnerService ownerService;
 
-    public OwnerController(OwnerService ownerService) {
-        this.ownerService = ownerService;
+    @PostMapping("/generateToken")
+    public java.util.Map<String, String> authenticateAndGetToken(@RequestBody AuthRequestData authRequestData, HttpServletResponse response) {
+        return ownerService.generateJWTToken(authRequestData, response);
     }
 
     @GetMapping("/getOwner/{owner_id}")
@@ -28,11 +33,11 @@ public class OwnerController {
 
     @PostMapping("/register")
     public ResponseEntity<Owner> register(@RequestBody OwnerRegistrationDTO request) {
-        Owner result = ownerService.registerOwner(request);
-        if (result == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        Owner saved = ownerService.registerOwner(request);
+        if (saved == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PostMapping("/remove")

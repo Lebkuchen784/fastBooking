@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>fastBooking: Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<header class="signup-header" style="position: relative;">
+    <a th:href="@{/}" class="button" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%);">Back</a>
+    <h1>Register an account</h1>
+    <button type="button" class="button" onclick="fillTestData()" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">Add mock data</button>
+</header>
+
+<div class="register-container">
+    <div class="register-cards-grid">
+        <main class="dashboard-card">
+            <h2 class="dashboard-header">Your personal details</h2>
+            <div class="login-form-container">
+                    <label class="login-fields">
+                        <input id="firstName" class="login-form" type="text" placeholder="First name" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="lastName" class="login-form" type="text" placeholder="Last name" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="emailAddress" class="login-form" type="email" placeholder="Email address" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="password" class="login-form" type="password" placeholder="Password" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="typeOfBusiness" class="login-form" type="text" placeholder="Type of business" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="ownerBusinessAddress" class="login-form" type="text" placeholder="Business address" required>
+                    </label>
+                    <label class="login-fields">
+                        <select id="paymentMethod" class="login-form" required>
+                            <option value="" disabled selected hidden>Select payment method</option>
+                            <option value="PAYPAL">Paypal</option>
+                            <option value="DEBIT_CARD">Debit card</option>
+                            <option value="CREDIT_CARD">Credit card</option>
+                            <option value="BITCOIN">Bitcoin</option>
+                            <option value="SEPA_BANK_TRANSFER">SEPA Bank Transfer</option>
+                        </select>
+                    </label>
+            </div>
+        </main>
+
+        <main class="dashboard-card">
+            <h2 class="dashboard-header">Your business details</h2>
+            <div class="login-form-container">
+                    <label class="login-fields">
+                        <input id="businessName" class="login-form" type="text" placeholder="Business name" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="businessDescription" class="login-form" type="text" placeholder="Business description" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="businessNumberOfEmployees" class="login-form" type="number" min="1" placeholder="Number of employees" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="businessAddress" class="login-form" type="text" placeholder="Business address" required>
+                    </label>
+                    <label class="login-fields">
+                        <input id="businessOpeningHour" class="login-form" type="text" placeholder="Opening hours"
+                            onfocus="this.type='time'"
+                            onblur="if(!this.value) this.type='text'"
+                            required>
+                    </label>
+                    <label class="login-fields">
+                        <input  id="businessClosingHour" class="login-form" type="text" placeholder="Closing hours"
+                            onfocus="this.type='time'"
+                            onblur="if(!this.value) this.type='text'"
+                            required>
+                    </label>
+            </div>
+        </main>
+
+    </div>
+
+    <div style="display:flex; justify-content:center; padding-bottom: 1rem;">
+        <button id="registerButton" type="button" class="registerButton" onclick="registeringFunction()">Sign up</button>
+    </div>
+
+</div>
+
+<script>
+    async function registeringFunction() {
+        const button = document.getElementById('registerButton');
+        button.disabled = true;
+        button.textContent = 'Working...';
+
+        const ownerPayload = {
+            firstName:           document.getElementById('firstName').value.trim(),
+            lastName:            document.getElementById('lastName').value.trim(),
+            emailAddress:        document.getElementById('emailAddress').value.trim(),
+            password:            document.getElementById('password').value,
+            typeOfBusiness:      document.getElementById('typeOfBusiness').value.trim(),
+            ownerBusinessAddress: document.getElementById('ownerBusinessAddress').value.trim(),
+            paymentMethod:       document.getElementById('paymentMethod').value,
+            accountStatus:       true
+        };
+
+        let ownerResponse;
+        try {
+            ownerResponse = await fetch('/owners/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ownerPayload)
+            });
+        } catch (e) {
+            window.alert('Network error while signing up.');
+            button.disabled = false;
+            button.textContent = 'Sign up';
+            return;
+        }
+
+        if (!ownerResponse.ok) {
+            window.alert('Failed to create account (status ' + ownerResponse.status + ').');
+            button.disabled = false;
+            button.textContent = 'Sign up';
+            return;
+        }
+
+        const ownerData = await ownerResponse.json();
+        const ownerId = ownerData.ID;
+
+        const orgPayload = {
+            businessName:              document.getElementById('businessName').value.trim(),
+            businessDescription:       document.getElementById('businessDescription').value.trim(),
+            businessNumberOfEmployees: parseInt(document.getElementById('businessNumberOfEmployees').value, 10),
+            businessAddress:           document.getElementById('businessAddress').value.trim(),
+            businessOpeningHour:       document.getElementById('businessOpeningHour').value,
+            businessClosingHour:       document.getElementById('businessClosingHour').value
+        };
+
+        let orgResponse;
+        try {
+            orgResponse = await fetch('/organizations/' + ownerId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orgPayload)
+            });
+        } catch (e) {
+            window.alert('Account created but failed to register business due to a network error.');
+            button.disabled = false;
+            button.textContent = 'Sign up';
+            return;
+        }
+
+        if (!orgResponse.ok) {
+            window.alert('Account created but business registration failed (status ' + orgResponse.status + ').');
+            button.disabled = false;
+            button.textContent = 'Sign up';
+            return;
+        }
+
+        button.textContent = 'Success';
+        button.style.backgroundColor = '#28a745';
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        window.location.href = '/';
+    }
+
+    function fillTestData() {
+        const paymentOptions = ['PAYPAL','DEBIT_CARD','CREDIT_CARD','BITCOIN','SEPA_BANK_TRANSFER'];
+        const randomPayment = paymentOptions[Math.floor(Math.random() * paymentOptions.length)];
+
+        document.getElementById('firstName').value          = 'Joe';
+        document.getElementById('lastName').value           = 'Mama';
+        document.getElementById('emailAddress').value       = 'joemama@example.com';
+        document.getElementById('password').value           = '676767';
+        document.getElementById('typeOfBusiness').value     = 'Great business';
+        document.getElementById('ownerBusinessAddress').value = 'Joe\'s Street 7, Vienna';
+        document.getElementById('paymentMethod').value      = randomPayment;
+
+        document.getElementById('businessName').value              = 'Joe\'s Business';
+        document.getElementById('businessDescription').value       = 'Providing great services for cheap prices';
+        document.getElementById('businessNumberOfEmployees').value = '12';
+        document.getElementById('businessAddress').value          = 'Joe\'s Street 6, Vienna';
+        document.getElementById('businessOpeningHour').value       = '09:00';
+        document.getElementById('businessClosingHour').value       = '18:00';
+    }
+</script>
+</body>
+</html>

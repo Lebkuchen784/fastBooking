@@ -3,29 +3,19 @@ package com.project.bookingService.config;
 import com.project.bookingService.booking.Booking;
 import com.project.bookingService.booking.BookingRepository;
 import com.project.bookingService.organization.Organization;
-import com.project.bookingService.user.businessOwner.Owner;
-import com.project.bookingService.user.businessOwner.OwnerRepository;
-import com.project.bookingService.user.businessOwner.PaymentMethod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.random.RandomGenerator;
 
 @Component
-@ConditionalOnProperty(name = "sample-data.enabled", havingValue = "true")
-public class RandomDataGenerator implements ApplicationRunner {
+public class RandomDataGenerator {
 
-    private static final int BOOKING_COUNT = 70;
-    private static final int BOOKINGS_PER_DAY = 5;
+    private static final int BOOKING_COUNT = 64;
+    private static final int BOOKINGS_PER_DAY = 8;
 
     private static final String[] FIRST_NAMES = {
             "Anna", "Ben", "Clara", "David", "Elena", "Felix", "Greta", "Hugo", "Iris", "Jonas"
@@ -40,61 +30,17 @@ public class RandomDataGenerator implements ApplicationRunner {
     };
     private static final int[] DURATIONS = {30, 45, 60};
 
-    private final OwnerRepository ownerRepository;
     private final BookingRepository bookingRepository;
     private final RandomGenerator random = RandomGenerator.getDefault();
 
-    public RandomDataGenerator(OwnerRepository ownerRepository, BookingRepository bookingRepository) {
-        this.ownerRepository = ownerRepository;
+    public RandomDataGenerator(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
     }
 
-    @Override
     @Transactional
-    public void run(ApplicationArguments args) {
-        if (ownerRepository.count() > 0) {
-            return;
-        }
-
-        Organization organization = createOrganization();
-        Owner owner = createOwner(organization);
-        organization.setOwner(owner);
-        ownerRepository.save(owner);
-
-        List<Booking> bookings = createBookings(organization);
-        bookingRepository.saveAll(bookings);
-
-        System.out.println("Owner ID: " + owner.getID());
-    }
-
-    private Owner createOwner(Organization organization) {
-        Owner owner = new Owner();
-        owner.setFirstName("Joe");
-        owner.setLastName("Mama");
-        owner.setEmailAddress("email@example.com");
-        owner.setPasswordHash("123456789");
-        owner.setPaymentMethod(PaymentMethod.CREDIT_CARD);
-        owner.setAccountStatus(true);
-        owner.setTypeOfBusiness("67 services");
-        owner.setBusinessAddress("Straight from the underground");
-        owner.setOrganization(organization);
-        return owner;
-    }
-
-    private Organization createOrganization() {
-        Organization organization = new Organization();
-        organization.setBusinessName("Joe's Business");
-        organization.setBusinessDescription("Providing great services for cheap prices");
-        organization.setBusinessNumberOfEmployees(10);
-        organization.setBusinessAddress("Somewhere over the rainbow");
-        organization.setBusinessOpeningHour(LocalTime.of(8, 0));
-        organization.setBusinessClosingHour(LocalTime.of(18, 0));
-        return organization;
-    }
-
-    private List<Booking> createBookings(Organization organization) {
+    public void createBookings(Organization organization) {
         List<Booking> bookings = new ArrayList<>(BOOKING_COUNT);
-        LocalDate firstBookingDate = LocalDate.now().minusDays(12);
+        LocalDate firstBookingDate = LocalDate.now().plusDays(3);
 
         for (int index = 0; index < BOOKING_COUNT; index++) {
             int dayOffset = index / BOOKINGS_PER_DAY;
@@ -105,22 +51,21 @@ public class RandomDataGenerator implements ApplicationRunner {
             booking.setClientFirstName(randomElement(FIRST_NAMES));
             booking.setClientLastName(randomElement(LAST_NAMES));
             booking.setBookingServicesToBeProvided(randomElement(SERVICES));
-            booking.setBookingDurationInMinutes(randomElement(DURATIONS));
+            booking.setBookingDurationInMinutes(randomElement());
             booking.setBookingIsPaid(random.nextBoolean());
             booking.setBookingDateAndTime(
                     firstBookingDate.plusDays(dayOffset).atTime(8 + (slotIndex * 2), 0)
             );
             bookings.add(booking);
         }
-
-        return bookings;
+        bookingRepository.saveAll(bookings);
     }
 
     private String randomElement(String[] values) {
         return values[random.nextInt(values.length)];
     }
 
-    private int randomElement(int[] values) {
-        return values[random.nextInt(values.length)];
+    private int randomElement() {
+        return RandomDataGenerator.DURATIONS[random.nextInt(RandomDataGenerator.DURATIONS.length)];
     }
 }

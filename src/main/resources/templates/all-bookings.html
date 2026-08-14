@@ -11,8 +11,8 @@
 </head>
 <body>
 <header class="dashboard-header" style="position: relative;">
-    <a th:href="@{/owners/{ownerId}(ownerId=${owner.ID})}" class="btn-secondary" style="position: absolute; left: 0; top: 0;">&larr; Back</a>
-    <h1>All bookings</h1>
+    <a th:href="@{/owners/{ownerId}(ownerId=${owner.ID})}" class="button" style="position: absolute; left: 0; top: 0;">Back</a>
+    <h1>Booking database</h1>
 </header>
 
 <div class="all-bookings-container">
@@ -29,14 +29,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:if="${!bookingsPage.hasContent()}"> /* Should not be reachable under normal conditions */
+                <tr th:if="${!bookingsPage.hasContent()}">
                     <td colspan="5" class="empty-state">There are no bookings available to show.</td>
                 </tr>
                 <tr th:each="booking : ${bookingsPage.content}">
                     <td th:text="${booking.getClientFirstName() + ' ' + booking.getClientLastName()}"></td>
                     <td class="mono-text" th:text="${booking.getID()}"></td>
                     <td th:text="${booking.getBookingServicesToBeProvided()}"></td>
-                    <td th:text="${#temporals.format(booking.getBookingDateAndTime(), 'yyyy-MM-dd HH:mm')}"></td>
+                    <td>
+                        <span th:text="${#temporals.format(booking.getBookingDateAndTime(), 'dd-MM-yyyy')}"></span>
+                        <span th:text="|${#temporals.format(booking.getBookingDateAndTime(), 'HH:mm')} - ${#temporals.format(booking.getBookingDateAndTime().plusMinutes(booking.getBookingDurationInMinutes()), 'HH:mm')}|"></span>
+                    </td>
                     <td>
                         <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid" th:text="'COMPLETED'"></span>
                         <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid" th:text="'PENDING'"></span>
@@ -48,28 +51,28 @@
 
         <nav class="pagination"
              th:if="${bookingsPage.totalPages > 0}">
-            <a class="btn-secondary"
+            <a class="button"
                rel="prev"
                th:if="${bookingsPage.hasPrevious()}"
                th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number - 1})}">
                 Previous
             </a>
-            <span class="btn-secondary pagination-disabled"
+            <span class="button pagination-disabled"
                   th:if="${!bookingsPage.hasPrevious()}">
                 Previous
             </span>
 
             <span class="page-indicator"
                   th:text="|Page ${bookingsPage.number + 1} of ${bookingsPage.totalPages}|">
-                Page 69 of 69
+                Page 0 of 0
             </span>
 
-            <a class="btn-secondary"
+            <a class="button"
                th:if="${bookingsPage.hasNext()}"
                th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number + 1})}">
                 Next
             </a>
-            <span class="btn-secondary pagination-disabled"
+            <span class="button pagination-disabled"
                   th:if="${!bookingsPage.hasNext()}">
                 Next
             </span>

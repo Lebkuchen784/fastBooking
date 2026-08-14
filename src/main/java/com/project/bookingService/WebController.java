@@ -23,9 +23,19 @@ public class WebController {
 
     private static final int BOOKINGS_PER_PAGE = 12; // pagination
 
+    @GetMapping("/")
+    ModelAndView index() {
+        return new ModelAndView("index");
+    }
+
+    @GetMapping("/register")
+    ModelAndView register() {
+        return new ModelAndView("register");
+    }
+
     @GetMapping("/owners/{ownerId}")
-    ModelAndView index(@PathVariable String ownerId) {
-        ModelAndView mav = new ModelAndView("index");
+    ModelAndView dashboard(@PathVariable String ownerId) {
+        ModelAndView mav = new ModelAndView("dashboard");
 
         if (ownerService.getNumberOfOwners() != 0 && organizationService.getNumberOfOrganizations() != 0) {
             mav.addObject("owner", ownerService.getOwner(ownerId));
@@ -35,14 +45,13 @@ public class WebController {
         if (organizationService.getNumberOfBookings() != 0) {
             String organizationId = organizationService.getOrganizationIdByOwnerId(ownerId);
             if (organizationId != null) {
-                Pageable pageable = PageRequest.of(0, 9, Sort.by(Sort.Direction.ASC, "bookingDateAndTime"));
+                Pageable pageable = PageRequest.of(0, 8, Sort.by(Sort.Direction.ASC, "bookingDateAndTime"));
                 Page<Booking> recentBookingsPage = organizationService.getOrganizationBookingsByOwnerId(ownerId, pageable);
                 if (recentBookingsPage.hasContent()) {
                     mav.addObject("bookings", recentBookingsPage.getContent());
                 }
             }
         }
-
         return mav;
     }
 
