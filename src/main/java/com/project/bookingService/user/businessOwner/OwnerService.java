@@ -1,6 +1,6 @@
 package com.project.bookingService.user.businessOwner;
 
-import com.project.bookingService.config.authentication.AuthRequestData;
+import com.project.bookingService.config.authentication.AuthRequestDTO;
 import com.project.bookingService.config.authentication.JWTUtility;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
@@ -54,14 +54,14 @@ public class OwnerService implements UserDetailsService {
                 owner.get().getAuthorities()); // not necessary
     }
 
-    public Map<String, String> generateJWTToken(AuthRequestData data, HttpServletResponse response) {
+    public Map<String, String> generateJWTToken(AuthRequestDTO data, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword())
+                new UsernamePasswordAuthenticationToken(data.email(), data.password())
         );
 
         if (authentication.isAuthenticated()) {
-            String token = jwtUtility.generateToken(data.getEmail());
-            Owner owner = this.getOwnerByEmail(data.getEmail());
+            String token = jwtUtility.generateToken(data.email());
+            Owner owner = this.getOwnerByEmail(data.email());
 
             Cookie jwtCookie = new Cookie("jwtToken", token);
             jwtCookie.setHttpOnly(true);

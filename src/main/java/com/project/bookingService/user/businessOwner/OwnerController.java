@@ -1,6 +1,6 @@
 package com.project.bookingService.user.businessOwner;
 
-import com.project.bookingService.config.authentication.AuthRequestData;
+import com.project.bookingService.config.authentication.AuthRequestDTO;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,8 +17,8 @@ public class OwnerController {
     private final OwnerService ownerService;
 
     @PostMapping("/generateToken")
-    public java.util.Map<String, String> authenticateAndGetToken(@RequestBody AuthRequestData authRequestData, HttpServletResponse response) {
-        return ownerService.generateJWTToken(authRequestData, response);
+    public java.util.Map<String, String> authenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO, HttpServletResponse response) {
+        return ownerService.generateJWTToken(authRequestDTO, response);
     }
 
     @GetMapping("/getOwner/{owner_id}")
