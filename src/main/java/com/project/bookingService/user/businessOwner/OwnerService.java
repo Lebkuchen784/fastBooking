@@ -7,6 +7,7 @@ import com.project.bookingService.organization.OrganizationCreationDTO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +31,9 @@ public class OwnerService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JWTUtility jwtUtility;
     private final AuthenticationManager authenticationManager;
+
+    @Value("${jwt.expiration.ms}")
+    private int expiration;
 
     public OwnerService(OwnerRepository ownerRepository, @Lazy PasswordEncoder passwordEncoder, JWTUtility jwtUtility,@Lazy AuthenticationManager authenticationManager) {
         this.ownerRepository = ownerRepository;
@@ -63,7 +67,7 @@ public class OwnerService implements UserDetailsService {
             jwtCookie.setHttpOnly(true);
             jwtCookie.setSecure(false); // for local host
             jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(60 * 60 * 24); // 24 hours
+            jwtCookie.setMaxAge(expiration / 1000); // 24 hours
 
             response.addCookie(jwtCookie);
 

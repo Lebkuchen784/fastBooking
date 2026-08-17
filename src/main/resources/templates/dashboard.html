@@ -70,10 +70,6 @@
         <h2>Organization details</h2>
         <ul class="org-details-list">
             <li>
-                <strong>Organization ID</strong>
-                <span class="mono-text" th:text="${organization.getID()}"></span>
-            </li>
-            <li>
                 <strong>Name</strong>
                 <span th:text="${organization.getBusinessName()}"></span>
             </li>
@@ -101,6 +97,10 @@
                 <strong>Owner details</strong>
                 <span th:text="${organization.getOwner().toString()}"></span>
                 <span th:text="|ID in the database: ${organization.getOwner().getID()}|"></span>
+            </li>
+            <li>
+                <strong>Organization ID</strong>
+                <span class="mono-text" th:text="${organization.getID()}"></span>
             </li>
         </ul>
     </aside>

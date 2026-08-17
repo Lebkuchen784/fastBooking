@@ -19,6 +19,9 @@ public class JWTUtility {
     @Value("${jwt.secret}")
     private String spookySecretString;
 
+    @Value("${jwt.expiration.ms}")
+    private int expiration;
+
     public SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(spookySecretString.getBytes());
     }
@@ -54,7 +57,7 @@ public class JWTUtility {
                    .claims(claims)
                    .subject(emailAddress)
                    .issuedAt(new Date())
-                   .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+                   .expiration(new Date(System.currentTimeMillis() + expiration))
                    .signWith(getSignKey())
                    .compact();
     }
