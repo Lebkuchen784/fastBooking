@@ -30,6 +30,8 @@ public class RandomDataGenerator {
     };
     private static final int[] DURATIONS = {30, 45, 60};
 
+    private static final String emailForAll = "something@gmail.com";
+
     private final BookingRepository bookingRepository;
     private final RandomGenerator random = RandomGenerator.getDefault();
 
@@ -56,6 +58,7 @@ public class RandomDataGenerator {
             booking.setBookingDateAndTime(
                     firstBookingDate.plusDays(dayOffset).atTime(8 + (slotIndex * 2), 0)
             );
+            booking.setClientEmailAddress(emailForAll);
             bookings.add(booking);
         }
         bookingRepository.saveAll(bookings);

@@ -19,8 +19,8 @@
 
 <div class="register-container">
   <div class="register-cards-grid">
-    <main class="dashboard-card">
-      <h2 class="dashboard-header">Your personal details</h2>
+    <main class="dashboard-card" th:if="${organization != null}">
+      <h2 class="dashboard-header">Booking details</h2>
       <div class="login-form-container">
         <label class="login-fields">
           <input id="clientFirstName" class="login-form" type="text" placeholder="First name" required>
@@ -29,60 +29,107 @@
           <input id="clientLastName" class="login-form" type="text" placeholder="Last name" required>
         </label>
         <label class="login-fields">
-          <input id="emailAddress" class="login-form" type="email" placeholder="Email address" required>
+          <input id="associatedEmailAddress" class="login-form" type="email" placeholder="Email address" required>
         </label>
         <label class="login-fields">
-          <select id="paymentMethod" class="login-form" required>
-            <option value="" disabled selected hidden>Select payment method</option>
-            <option value="PAYPAL">Paypal</option>
-            <option value="DEBIT_CARD">Debit card</option>
-            <option value="CREDIT_CARD">Credit card</option>
-            <option value="BITCOIN">Bitcoin</option>
-            <option value="SEPA_BANK_TRANSFER">SEPA Bank Transfer</option>
-          </select>
+          <input id="bookingServicesProvided" class="login-form" type="text" placeholder="Services required" required>
         </label>
+        <label class="login-fields">
+          <input id="bookingDurationInMinutes" class="login-form" type="number" placeholder="Booking duration in minutes" required>
+        </label>
+        <label class="login-fields">
+          <input id="bookingDateAndTime" onfocus="this.type='datetime-local'" onblur="if(!this.value) this.type='text'" class="login-form" type="text" placeholder="Booking date and time" required>
+        </label>
+        <div style="display:flex; justify-content:center; padding-bottom: 0.5rem; transform: translateY(10%)">
+          <button id="addBookingButton" type="button" class="registerButton" th:organizationId="${organizationId}" onclick="addBooking(this)">Add booking</button>
+        </div>
       </div>
     </main>
 
-    <main class="dashboard-card">
-      <h2 class="dashboard-header">Your business details</h2>
-      <div class="login-form-container">
-        <label class="login-fields">
-          <input id="businessName" class="login-form" type="text" placeholder="Business name" required>
-        </label>
-        <label class="login-fields">
-          <input id="businessDescription" class="login-form" type="text" placeholder="Business description" required>
-        </label>
-        <label class="login-fields">
-          <input id="businessNumberOfEmployees" class="login-form" type="number" min="1" placeholder="Number of employees" required>
-        </label>
-        <label class="login-fields">
-          <input id="businessAddress" class="login-form" type="text" placeholder="Business address" required>
-        </label>
-        <label class="login-fields">
-          <input id="businessOpeningHour" class="login-form" type="text" placeholder="Opening hours"
-                 onfocus="this.type='time'"
-                 onblur="if(!this.value) this.type='text'"
-                 required>
-        </label>
-        <label class="login-fields">
-          <input  id="businessClosingHour" class="login-form" type="text" placeholder="Closing hours"
-                  onfocus="this.type='time'"
-                  onblur="if(!this.value) this.type='text'"
-                  required>
-        </label>
-      </div>
-    </main>
-
+    <aside class="dashboard-card sidebar" th:if="${organization == null}">
+      <span class="empty-state-left-little-padding">No business exists with this ID. Contact the business owner for the correct link.</span>
+    </aside>
+    <aside class="dashboard-card sidebar" th:if="${organization != null}">
+      <h2>Organization details</h2>
+      <ul class="org-details-list">
+        <li>
+          <strong>Name</strong>
+          <span th:text="${organization.getBusinessName()}"></span>
+        </li>
+        <li>
+          <strong>Description</strong>
+          <span th:text="${organization.getBusinessDescription()}"></span>
+        </li>
+        <li>
+          <strong>Address</strong>
+          <span th:text="${organization.getBusinessAddress()}"></span>
+        </li>
+        <li>
+          <strong>Employees</strong>
+          <span th:text="${organization.getBusinessNumberOfEmployees()}"></span>
+        </li>
+        <li>
+          <strong>Opening Hours</strong>
+          <span th:text="${organization.getBusinessOpeningHour()}"></span>
+        </li>
+        <li>
+          <strong>Start of appointment</strong>
+          <span th:text="${organization.getBusinessClosingHour()}"></span>
+        </li>
+        <li>
+          <strong>End of appointment</strong>
+          <span th:text="${organization.getOwner().toString()}"></span>
+        </li>
+      </ul>
+    </aside>
   </div>
-
-  <div style="display:flex; justify-content:center; padding-bottom: 1rem;">
-    <button id="registerButton" type="button" class="registerButton" onclick="registeringFunction()">Sign up</button>
-  </div>
-
 </div>
 
 <script>
+  async function addBooking() {
+    const button = document.getElementById('addBookingButton');
+    const organizationId = button.getAttribute('organizationId');
+    button.disabled = true;
+    button.textContent = 'Working...';
+
+    const bookingPayload = {
+      clientFirstName:            document.getElementById('clientFirstName').value.trim(),
+      clientLastName:             document.getElementById('clientLastName').value.trim(),
+      associatedEmailAddress:     document.getElementById('associatedEmailAddress').value.trim(),
+      bookingDateAndTime:         document.getElementById('bookingDateAndTime').value,
+      bookingDurationInMinutes:   document.getElementById('bookingDurationInMinutes').value,
+      bookingServicesProvided:    document.getElementById('bookingServicesProvided').value,
+      bookingIsPaid:              true
+    };
+
+    let bookingResponse;
+    try {
+      bookingResponse = await fetch(`/organizations/${organizationId}/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingPayload)
+      });
+    } catch (e) {
+      window.alert('Network error while adding booking.');
+      button.disabled = false;
+      button.textContent = 'Add booking';
+      return bookingResponse;
+    }
+
+    if (!bookingResponse.ok) {
+      window.alert('Failed to book an appointment (status ' + bookingResponse.status + ').');
+      button.disabled = false;
+      button.textContent = 'Add booking';
+      return bookingResponse;
+    }
+
+    button.textContent = 'Success';
+    button.style.backgroundColor = '#28a745';
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    button.disabled=false;
+    button.textContent = 'Add booking';
+    return bookingResponse;
+  }
 </script>
 </body>
 </html>

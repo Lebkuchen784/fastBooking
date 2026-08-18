@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/organizations/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/client").permitAll()
+                        .requestMatchers("/bookAppointment/**").permitAll()
                         .anyRequest().authenticated()
                 )
                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
