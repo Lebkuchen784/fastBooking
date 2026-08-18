@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/owners/register", "/owners/generateToken").permitAll()
                         .requestMatchers("/organizations/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers("/client").permitAll()
                         .anyRequest().authenticated()
                 )
                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

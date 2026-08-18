@@ -72,6 +72,15 @@ public class OrganizationService {
         return organization.get().getID();
     }
 
+    public Optional<Organization> getOrganizationById(String orgId) {
+        if (orgId == null) {
+            System.out.println("Organization ID was null, getOrganizationById returns Optional empty.");
+            return Optional.empty();
+        }
+
+        return this.organizationRepository.findById(orgId);
+    }
+
     public Long getNumberOfBookings() {
         return bookingRepository.count();
     }
@@ -200,8 +209,8 @@ public class OrganizationService {
 
         Organization organization = organizationOptional.get();
 
-        LocalDateTime bookingDateAndTime = LocalDateTime.parse(requestObject.getBookingDateAndTime());
-        LocalDateTime bookingEndTime = bookingDateAndTime.plusMinutes(requestObject.getBookingDurationInMinutes());
+        LocalDateTime bookingDateAndTime = LocalDateTime.parse(requestObject.bookingDateAndTime());
+        LocalDateTime bookingEndTime = bookingDateAndTime.plusMinutes(requestObject.bookingDurationInMinutes());
 
         if (bookingEndTime.isAfter(organization.getBusinessClosingHour().atDate(bookingEndTime.toLocalDate()))) {
             System.out.println("Booking cannot be scheduled after the organization's closing hours: " + organization.getBusinessClosingHour() + ".");
@@ -221,12 +230,12 @@ public class OrganizationService {
         Booking newBooking = new Booking();
 
         newBooking.setOrganization(organization);
-        newBooking.setBookingIsPaid(requestObject.getBookingIsPaid());
-        newBooking.setBookingDurationInMinutes(requestObject.getBookingDurationInMinutes());
-        newBooking.setBookingDateAndTime(LocalDateTime.parse(requestObject.getBookingDateAndTime()));
-        newBooking.setBookingServicesToBeProvided(requestObject.getBookingServicesProvided());
-        newBooking.setClientFirstName(requestObject.getClientFirstName());
-        newBooking.setClientLastName(requestObject.getClientLastName());
+        newBooking.setBookingIsPaid(requestObject.bookingIsPaid());
+        newBooking.setBookingDurationInMinutes(requestObject.bookingDurationInMinutes());
+        newBooking.setBookingDateAndTime(LocalDateTime.parse(requestObject.bookingDateAndTime()));
+        newBooking.setBookingServicesToBeProvided(requestObject.bookingServicesProvided());
+        newBooking.setClientFirstName(requestObject.clientFirstName());
+        newBooking.setClientLastName(requestObject.clientLastName());
 
         organization.getBookings().add(newBooking);
         organizationRepository.save(organization);

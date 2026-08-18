@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fastBooking: Appointment booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<header class="signup-header" style="position: relative;">
+  <h1>Book your appointment</h1>
+  <button type="button" class="button" onclick="fillTestData()" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">Add mock data</button>
+</header>
+
+<div class="register-container">
+  <div class="register-cards-grid">
+    <main class="dashboard-card">
+      <h2 class="dashboard-header">Your personal details</h2>
+      <div class="login-form-container">
+        <label class="login-fields">
+          <input id="clientFirstName" class="login-form" type="text" placeholder="First name" required>
+        </label>
+        <label class="login-fields">
+          <input id="clientLastName" class="login-form" type="text" placeholder="Last name" required>
+        </label>
+        <label class="login-fields">
+          <input id="emailAddress" class="login-form" type="email" placeholder="Email address" required>
+        </label>
+        <label class="login-fields">
+          <select id="paymentMethod" class="login-form" required>
+            <option value="" disabled selected hidden>Select payment method</option>
+            <option value="PAYPAL">Paypal</option>
+            <option value="DEBIT_CARD">Debit card</option>
+            <option value="CREDIT_CARD">Credit card</option>
+            <option value="BITCOIN">Bitcoin</option>
+            <option value="SEPA_BANK_TRANSFER">SEPA Bank Transfer</option>
+          </select>
+        </label>
+      </div>
+    </main>
+
+    <main class="dashboard-card">
+      <h2 class="dashboard-header">Your business details</h2>
+      <div class="login-form-container">
+        <label class="login-fields">
+          <input id="businessName" class="login-form" type="text" placeholder="Business name" required>
+        </label>
+        <label class="login-fields">
+          <input id="businessDescription" class="login-form" type="text" placeholder="Business description" required>
+        </label>
+        <label class="login-fields">
+          <input id="businessNumberOfEmployees" class="login-form" type="number" min="1" placeholder="Number of employees" required>
+        </label>
+        <label class="login-fields">
+          <input id="businessAddress" class="login-form" type="text" placeholder="Business address" required>
+        </label>
+        <label class="login-fields">
+          <input id="businessOpeningHour" class="login-form" type="text" placeholder="Opening hours"
+                 onfocus="this.type='time'"
+                 onblur="if(!this.value) this.type='text'"
+                 required>
+        </label>
+        <label class="login-fields">
+          <input  id="businessClosingHour" class="login-form" type="text" placeholder="Closing hours"
+                  onfocus="this.type='time'"
+                  onblur="if(!this.value) this.type='text'"
+                  required>
+        </label>
+      </div>
+    </main>
+
+  </div>
+
+  <div style="display:flex; justify-content:center; padding-bottom: 1rem;">
+    <button id="registerButton" type="button" class="registerButton" onclick="registeringFunction()">Sign up</button>
+  </div>
+
+</div>
+
+<script>
+</script>
+</body>
+</html>

@@ -99,8 +99,8 @@
                 <span th:text="|ID in the database: ${organization.getOwner().getID()}|"></span>
             </li>
             <li>
-                <strong>Organization ID</strong>
-                <span class="mono-text" th:text="${organization.getID()}"></span>
+                <strong>Client access link</strong>
+                <span class="mono-text" style="color: #58a6ff" th:text="'bookAppointment/' + ${organization.getID()}"></span>
             </li>
         </ul>
     </aside>

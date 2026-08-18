@@ -42,6 +42,9 @@ public class Booking {
     @Column(name="client_last_name", columnDefinition="TEXT")
     private String clientLastName;
 
+    @Column(name="associatedEmailAddress")
+    private String clientEmailAddress;
+
     @Transient
     private Boolean errorFlag = false;
 

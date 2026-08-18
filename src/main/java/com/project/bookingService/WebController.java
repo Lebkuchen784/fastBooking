@@ -1,6 +1,7 @@
 package com.project.bookingService;
 
 import com.project.bookingService.booking.Booking;
+import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationService;
 import com.project.bookingService.user.businessOwner.OwnerService;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -31,6 +34,21 @@ public class WebController {
     @GetMapping("/register")
     ModelAndView register() {
         return new ModelAndView("register");
+    }
+
+    @GetMapping("/client")
+    ModelAndView client() {
+        return new ModelAndView("client");
+    }
+
+    @GetMapping("bookAppointment/{organizationId}")
+    ModelAndView clientSide(@PathVariable String organizationId) {
+        ModelAndView mav = new ModelAndView("client");
+
+        Optional<Organization> organization = organizationService.getOrganizationById(organizationId);
+        organization.ifPresent(mav::addObject);
+
+        return mav;
     }
 
     @GetMapping("/owners/{ownerId}")
