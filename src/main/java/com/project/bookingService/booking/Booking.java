@@ -43,7 +43,7 @@ public class Booking {
     private String clientLastName;
 
     @Column(name="associatedEmailAddress")
-    private String clientEmailAddress;
+    private String associatedEmailAddress;
 
     @Transient
     private Boolean errorFlag = false;

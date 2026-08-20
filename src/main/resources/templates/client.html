@@ -1,135 +1,156 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>fastBooking: Appointment booking</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
-        rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/styles.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>fastBooking: Appointment booking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
 
 <header class="signup-header" style="position: relative;">
-  <h1>Book your appointment</h1>
-  <button type="button" class="button" onclick="fillTestData()" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">Add mock data</button>
+    <h1>Book your appointment</h1>
+    <button type="button" class="button" onclick="fillTestData()"
+            style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">Add mock data
+    </button>
 </header>
 
 <div class="register-container">
-  <div class="register-cards-grid">
-    <main class="dashboard-card" th:if="${organization != null}">
-      <h2 class="dashboard-header">Booking details</h2>
-      <div class="login-form-container">
-        <label class="login-fields">
-          <input id="clientFirstName" class="login-form" type="text" placeholder="First name" required>
-        </label>
-        <label class="login-fields">
-          <input id="clientLastName" class="login-form" type="text" placeholder="Last name" required>
-        </label>
-        <label class="login-fields">
-          <input id="associatedEmailAddress" class="login-form" type="email" placeholder="Email address" required>
-        </label>
-        <label class="login-fields">
-          <input id="bookingServicesProvided" class="login-form" type="text" placeholder="Services required" required>
-        </label>
-        <label class="login-fields">
-          <input id="bookingDurationInMinutes" class="login-form" type="number" placeholder="Booking duration in minutes" required>
-        </label>
-        <label class="login-fields">
-          <input id="bookingDateAndTime" onfocus="this.type='datetime-local'" onblur="if(!this.value) this.type='text'" class="login-form" type="text" placeholder="Booking date and time" required>
-        </label>
-        <div style="display:flex; justify-content:center; padding-bottom: 0.5rem; transform: translateY(10%)">
-          <button id="addBookingButton" type="button" class="registerButton" th:organizationId="${organizationId}" onclick="addBooking(this)">Add booking</button>
-        </div>
-      </div>
-    </main>
+    <div class="register-cards-grid">
+        <main class="dashboard-card" th:if="${organization != null}">
+            <h2 class="dashboard-header">Booking details</h2>
+            <div class="login-form-container">
+                <label class="login-fields">
+                    <input id="clientFirstName" class="login-form" type="text" placeholder="First name" required>
+                </label>
+                <label class="login-fields">
+                    <input id="clientLastName" class="login-form" type="text" placeholder="Last name" required>
+                </label>
+                <label class="login-fields">
+                    <input id="associatedEmailAddress" class="login-form" type="email" placeholder="Email address"
+                           required>
+                </label>
+                <label class="login-fields">
+                    <input id="bookingServicesProvided" class="login-form" type="text" placeholder="Services required"
+                           required>
+                </label>
+                <label class="login-fields">
+                    <input id="bookingDurationInMinutes" class="login-form" type="number"
+                           placeholder="Booking duration in minutes" required>
+                </label>
+                <label class="login-fields">
+                    <input id="bookingDateAndTime" onfocus="this.type='datetime-local'"
+                           onblur="if(!this.value) this.type='text'" class="login-form" type="text"
+                           placeholder="Booking date and time" required>
+                </label>
+                <div style="display:flex; justify-content:center; padding-bottom: 0.5rem; transform: translateY(10%)">
+                    <button id="addBookingButton" type="button" class="registerButton"
+                            th:organizationId="${organizationId}" onclick="addBooking(this)">Submit
+                    </button>
+                </div>
+            </div>
+        </main>
 
-    <aside class="dashboard-card sidebar" th:if="${organization == null}">
-      <span class="empty-state-left-little-padding">No business exists with this ID. Contact the business owner for the correct link.</span>
-    </aside>
-    <aside class="dashboard-card sidebar" th:if="${organization != null}">
-      <h2>Organization details</h2>
-      <ul class="org-details-list">
-        <li>
-          <strong>Name</strong>
-          <span th:text="${organization.getBusinessName()}"></span>
-        </li>
-        <li>
-          <strong>Description</strong>
-          <span th:text="${organization.getBusinessDescription()}"></span>
-        </li>
-        <li>
-          <strong>Address</strong>
-          <span th:text="${organization.getBusinessAddress()}"></span>
-        </li>
-        <li>
-          <strong>Employees</strong>
-          <span th:text="${organization.getBusinessNumberOfEmployees()}"></span>
-        </li>
-        <li>
-          <strong>Opening Hours</strong>
-          <span th:text="${organization.getBusinessOpeningHour()}"></span>
-        </li>
-        <li>
-          <strong>Start of appointment</strong>
-          <span th:text="${organization.getBusinessClosingHour()}"></span>
-        </li>
-        <li>
-          <strong>End of appointment</strong>
-          <span th:text="${organization.getOwner().toString()}"></span>
-        </li>
-      </ul>
-    </aside>
-  </div>
+        <!--TODO: Fix the positioning of this message-->
+        <main class="dashboard-card" th:if="${organization == null}">
+            <span class="empty-state-left-little-padding">No business exists with this ID. Contact the business owner for the correct link.</span>
+        </main>
+
+        <aside class="dashboard-card sidebar" th:if="${organization != null}">
+            <h2>Business details</h2>
+            <ul class="org-details-list">
+                <li>
+                    <strong>Name</strong>
+                    <span th:text="${organization.getBusinessName()}"></span>
+                </li>
+                <li>
+                    <strong>Description</strong>
+                    <span th:text="${organization.getBusinessDescription()}"></span>
+                </li>
+                <li>
+                    <strong>Address</strong>
+                    <span th:text="${organization.getBusinessAddress()}"></span>
+                </li>
+                <li>
+                    <strong>Employees</strong>
+                    <span th:text="${organization.getBusinessNumberOfEmployees()}"></span>
+                </li>
+                <li>
+                    <strong>Opening Hours</strong>
+                    <span th:text="${organization.getBusinessOpeningHour()}"></span>
+                </li>
+                <li>
+                    <strong>Closing Hours</strong>
+                    <span th:text="${organization.getBusinessClosingHour()}"></span>
+                </li>
+                <li>
+                    <strong>Business owner details</strong>
+                    <span th:text="${organization.getOwner().toString()}"></span>
+                </li>
+            </ul>
+        </aside>
+    </div>
 </div>
 
 <script>
-  async function addBooking() {
-    const button = document.getElementById('addBookingButton');
-    const organizationId = button.getAttribute('organizationId');
-    button.disabled = true;
-    button.textContent = 'Working...';
+    async function addBooking() {
+        const button = document.getElementById('addBookingButton');
+        const organizationId = button.getAttribute('organizationId');
+        button.disabled = true;
+        button.textContent = 'Working...';
 
-    const bookingPayload = {
-      clientFirstName:            document.getElementById('clientFirstName').value.trim(),
-      clientLastName:             document.getElementById('clientLastName').value.trim(),
-      associatedEmailAddress:     document.getElementById('associatedEmailAddress').value.trim(),
-      bookingDateAndTime:         document.getElementById('bookingDateAndTime').value,
-      bookingDurationInMinutes:   document.getElementById('bookingDurationInMinutes').value,
-      bookingServicesProvided:    document.getElementById('bookingServicesProvided').value,
-      bookingIsPaid:              true
-    };
+        const bookingPayload = {
+            clientFirstName: document.getElementById('clientFirstName').value.trim(),
+            clientLastName: document.getElementById('clientLastName').value.trim(),
+            associatedEmailAddress: document.getElementById('associatedEmailAddress').value.trim(),
+            bookingDateAndTime: document.getElementById('bookingDateAndTime').value,
+            bookingDurationInMinutes: document.getElementById('bookingDurationInMinutes').value,
+            bookingServicesProvided: document.getElementById('bookingServicesProvided').value,
+            bookingIsPaid: true
+        };
 
-    let bookingResponse;
-    try {
-      bookingResponse = await fetch(`/organizations/${organizationId}/bookings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bookingPayload)
-      });
-    } catch (e) {
-      window.alert('Network error while adding booking.');
-      button.disabled = false;
-      button.textContent = 'Add booking';
-      return bookingResponse;
+        let bookingResponse;
+        try {
+            bookingResponse = await fetch(`/organizations/${organizationId}/bookings`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(bookingPayload)
+            });
+        } catch (e) {
+            window.alert('Network error while adding booking.');
+            button.disabled = false;
+            button.textContent = 'Submit';
+            return bookingResponse;
+        }
+
+        if (!bookingResponse.ok) {
+            window.alert('Failed to book an appointment (status ' + bookingResponse.status + ').');
+            button.disabled = false;
+            button.textContent = 'Submit';
+            return bookingResponse;
+        }
+
+        button.textContent = 'Success';
+        button.style.backgroundColor = '#28a745';
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        button.style = 'button';
+        button.disabled = false;
+        button.textContent = 'Submit';
+        return bookingResponse;
     }
 
-    if (!bookingResponse.ok) {
-      window.alert('Failed to book an appointment (status ' + bookingResponse.status + ').');
-      button.disabled = false;
-      button.textContent = 'Add booking';
-      return bookingResponse;
+    function fillTestData() {
+            document.getElementById('clientFirstName').value = 'JoeClient';
+            document.getElementById('clientLastName').value = 'MamaClient';
+            document.getElementById('associatedEmailAddress').value = 'joemamaClient@gmail.com';
+            document.getElementById('bookingDateAndTime').value = '2026-08-18T13:00';
+            document.getElementById('bookingDurationInMinutes').value = 30;
+            document.getElementById('bookingServicesProvided').value = 'Premium slap to the face';
     }
-
-    button.textContent = 'Success';
-    button.style.backgroundColor = '#28a745';
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    button.disabled=false;
-    button.textContent = 'Add booking';
-    return bookingResponse;
-  }
 </script>
 </body>
 </html>

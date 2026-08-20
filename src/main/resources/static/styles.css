@@ -120,6 +120,13 @@ body {
     align-items: center;
 }
 
+.login-fields-right {
+    width: 100%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
 .login-form {
     width: 100%;
     padding: 0.85rem 1rem;
@@ -150,6 +157,11 @@ select.login-form {
 }
 
 input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
 }

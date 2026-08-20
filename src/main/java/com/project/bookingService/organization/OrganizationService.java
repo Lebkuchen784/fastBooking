@@ -236,6 +236,7 @@ public class OrganizationService {
         newBooking.setBookingServicesToBeProvided(requestObject.bookingServicesProvided());
         newBooking.setClientFirstName(requestObject.clientFirstName());
         newBooking.setClientLastName(requestObject.clientLastName());
+        newBooking.setAssociatedEmailAddress(requestObject.associatedEmailAddress());
 
         organization.getBookings().add(newBooking);
         organizationRepository.save(organization);

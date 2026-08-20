@@ -58,7 +58,7 @@ public class RandomDataGenerator {
             booking.setBookingDateAndTime(
                     firstBookingDate.plusDays(dayOffset).atTime(8 + (slotIndex * 2), 0)
             );
-            booking.setClientEmailAddress(emailForAll);
+            booking.setAssociatedEmailAddress(emailForAll);
             bookings.add(booking);
         }
         bookingRepository.saveAll(bookings);

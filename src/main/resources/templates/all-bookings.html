@@ -6,19 +6,23 @@
     <title>fastBooking: All bookings</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
 <header class="dashboard-header" style="position: relative;">
     <a th:href="@{/owners/{ownerId}(ownerId=${owner.ID})}" class="button" style="position: absolute; left: 0; top: 0;">Back</a>
+    <label style="position: absolute; right: 0; top: 0;">
+        <input class="login-form" type="text" id="searchQuery" onkeyup="searchByName()" placeholder="Search by name...">
+    </label>
     <h1>Booking database</h1>
 </header>
 
 <div class="all-bookings-container">
     <main class="dashboard-card">
         <div class="table-responsive">
-            <table class="data-table">
+            <table id="dataTable" class="data-table">
                 <thead>
                 <tr>
                     <th>Client</th>
@@ -41,8 +45,10 @@
                         <span th:text="|${#temporals.format(booking.getBookingDateAndTime(), 'HH:mm')} - ${#temporals.format(booking.getBookingDateAndTime().plusMinutes(booking.getBookingDurationInMinutes()), 'HH:mm')}|"></span>
                     </td>
                     <td>
-                        <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid" th:text="'COMPLETED'"></span>
-                        <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid" th:text="'PENDING'"></span>
+                        <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid"
+                              th:text="'COMPLETED'"></span>
+                        <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid"
+                              th:text="'PENDING'"></span>
                     </td>
                 </tr>
                 </tbody>
@@ -52,7 +58,6 @@
         <nav class="pagination"
              th:if="${bookingsPage.totalPages > 0}">
             <a class="button"
-               rel="prev"
                th:if="${bookingsPage.hasPrevious()}"
                th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number - 1})}">
                 Previous
@@ -91,6 +96,26 @@
             });
         });
     });
+
+    function searchByName() {
+        let input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchQuery");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("dataTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
 </script>
 </body>
 </html>
