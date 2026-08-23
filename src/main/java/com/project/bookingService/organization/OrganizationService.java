@@ -3,6 +3,8 @@ package com.project.bookingService.organization;
 import com.project.bookingService.booking.Booking;
 import com.project.bookingService.booking.BookingCreationDTO;
 import com.project.bookingService.booking.BookingRepository;
+import com.project.bookingService.config.email_service.EmailSender;
+import com.project.bookingService.config.email_service.RecipientDTO;
 import com.project.bookingService.user.businessOwner.Owner;
 import com.project.bookingService.user.businessOwner.OwnerRepository;
 import org.springframework.data.domain.Page;
@@ -22,11 +24,13 @@ public class OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final OwnerRepository ownerRepository;
     private final BookingRepository bookingRepository;
+    private final EmailSender sender;
 
-    public OrganizationService(OrganizationRepository organizationRepository, OwnerRepository ownerRepository, BookingRepository bookingRepository) {
+    public OrganizationService(OrganizationRepository organizationRepository, OwnerRepository ownerRepository, BookingRepository bookingRepository, EmailSender sender) {
         this.organizationRepository = organizationRepository;
         this.ownerRepository = ownerRepository;
         this.bookingRepository = bookingRepository;
+        this.sender = sender;
     }
 
     public Page<Booking> getOrganizationBookingsByOwnerId(String ownerId, Pageable pageable) {
@@ -123,6 +127,16 @@ public class OrganizationService {
 
         return bookings;
     }
+
+    public Page<Booking> searchMethodByName(String ownerId, String name, Pageable pageable) {
+    Optional<Owner> owner = ownerRepository.findById(ownerId);
+
+    if (owner.isEmpty() || owner.get().getOrganization() == null) {
+        return Page.empty(pageable);
+    }
+
+    return bookingRepository.findByNameContainingAndByOrg(owner.get().getOrganization(), name, pageable);
+}
 
     @Transactional
     public Organization createOrganization(OrganizationCreationDTO requestObject, String ownerId) {
@@ -240,6 +254,44 @@ public class OrganizationService {
 
         organization.getBookings().add(newBooking);
         organizationRepository.save(organization);
+
+        if (newBooking.getAssociatedEmailAddress() != null && !newBooking.getAssociatedEmailAddress().isEmpty()) {
+            RecipientDTO recipient = new RecipientDTO();
+            
+            String orgName = organization.getBusinessName() != null ? organization.getBusinessName() : "our organization";
+            String subject = "Appointment Confirmation: " + orgName;
+            
+            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' HH:mm");
+            String formattedDate = newBooking.getBookingDateAndTime().format(formatter);
+            
+            String message = String.format(
+                    """
+                            Dear %s %s,
+                            
+                            You have successfully booked an appointment at %s.
+                            
+                            Appointment Details:
+                            - Date and Time: %s
+                            - Duration: %d minutes
+                            - Services: %s
+                            - Location: %s
+                            
+                            We look forward to seeing you!""",
+                    newBooking.getClientFirstName(),
+                    newBooking.getClientLastName(),
+                    orgName,
+                    formattedDate,
+                    newBooking.getBookingDurationInMinutes(),
+                    newBooking.getBookingServicesToBeProvided(),
+                    organization.getBusinessAddress() != null ? organization.getBusinessAddress() : "Not specified"
+            );
+            
+            recipient.setSubject(subject);
+            recipient.setMessageBody(message);
+            recipient.setRecipient(newBooking.getAssociatedEmailAddress());
+            System.out.println(sender.sendMail(recipient));
+        }
+
         return newBooking;
     }
 }

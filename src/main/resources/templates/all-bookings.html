@@ -13,9 +13,11 @@
 <body>
 <header class="dashboard-header" style="position: relative;">
     <a th:href="@{/owners/{ownerId}(ownerId=${owner.ID})}" class="button" style="position: absolute; left: 0; top: 0;">Back</a>
-    <label style="position: absolute; right: 0; top: 0;">
-        <input class="login-form" type="text" id="searchQuery" onkeyup="searchByName()" placeholder="Search by name...">
-    </label>
+    <form th:action="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID})}" method="get" style="position: absolute; right: 0; top: 0;">
+        <label>
+            <input class="login-form" type="text" name="searchQueryName" th:value="${searchQueryName}" placeholder="Search by name... (Enter)">
+        </label>
+    </form>
     <h1>Booking database</h1>
 </header>
 
@@ -26,6 +28,7 @@
                 <thead>
                 <tr>
                     <th>Client</th>
+                    <th>Client email</th>
                     <th>Booking ID</th>
                     <th>Service</th>
                     <th>Date and Time</th>
@@ -34,10 +37,11 @@
                 </thead>
                 <tbody>
                 <tr th:if="${!bookingsPage.hasContent()}">
-                    <td colspan="5" class="empty-state">There are no bookings available to show.</td>
+                    <td colspan="6" class="empty-state">There are no bookings available to show.</td>
                 </tr>
                 <tr th:each="booking : ${bookingsPage.content}">
                     <td th:text="${booking.getClientFirstName() + ' ' + booking.getClientLastName()}"></td>
+                    <td th:text="${booking.getAssociatedEmailAddress()}"></td>
                     <td class="mono-text" th:text="${booking.getID()}"></td>
                     <td th:text="${booking.getBookingServicesToBeProvided()}"></td>
                     <td>
@@ -59,8 +63,8 @@
              th:if="${bookingsPage.totalPages > 0}">
             <a class="button"
                th:if="${bookingsPage.hasPrevious()}"
-               th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number - 1})}">
-                Previous
+               th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number - 1}, searchQueryName=${searchQueryName})}">
+            Previous
             </a>
             <span class="button pagination-disabled"
                   th:if="${!bookingsPage.hasPrevious()}">
@@ -74,7 +78,7 @@
 
             <a class="button"
                th:if="${bookingsPage.hasNext()}"
-               th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number + 1})}">
+               th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=${bookingsPage.number + 1}, searchQueryName=${searchQueryName})}">
                 Next
             </a>
             <span class="button pagination-disabled"
@@ -96,26 +100,6 @@
             });
         });
     });
-
-    function searchByName() {
-        let input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("searchQuery");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("dataTable");
-        tr = table.getElementsByTagName("tr");
-
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
 </script>
 </body>
 </html>

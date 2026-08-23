@@ -74,16 +74,23 @@ public class WebController {
     }
 
     @GetMapping("/owners/{ownerId}/all-bookings")
-    ModelAndView allBookings(@PathVariable String ownerId, @RequestParam(name = "page", defaultValue = "0") int page) {
+    ModelAndView allBookings(@PathVariable String ownerId,
+                             @RequestParam(name = "page", defaultValue = "0") int page,
+                             @RequestParam(name = "searchQueryName", required = false) String searchQueryName) {
+
         Pageable pageable = PageRequest.of(Math.max(page, 0), BOOKINGS_PER_PAGE, Sort.by(Sort.Direction.ASC, "bookingDateAndTime"));
-        Page<Booking> bookingsPage = organizationService.getOrganizationBookingsByOwnerId(ownerId, pageable);
 
+        Page<Booking> bookingsPage;
+        if (searchQueryName != null && !searchQueryName.trim().isEmpty()) {
+            bookingsPage = organizationService.searchMethodByName(ownerId, searchQueryName, pageable);
+        } else {
+            bookingsPage = organizationService.getOrganizationBookingsByOwnerId(ownerId, pageable);
+        }
         ModelAndView mav = new ModelAndView("all-bookings");
-
         mav.addObject("owner", ownerService.getOwner(ownerId));
         mav.addObject("organization", organizationService.getOrganizationByOwnerId(ownerId));
         mav.addObject("bookingsPage", bookingsPage);
-
+        mav.addObject("searchQueryName", searchQueryName);
         return mav;
     }
 }

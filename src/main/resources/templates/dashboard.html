@@ -28,6 +28,7 @@
                 <thead>
                 <tr>
                     <th>Client</th>
+                    <th>Client email</th>
                     <th>Booking ID</th>
                     <th>Service</th>
                     <th>Date and Time</th>
@@ -36,10 +37,11 @@
                 </thead>
                 <tbody>
                 <tr th:if="${bookings == null or bookings.isEmpty()}">
-                    <td colspan="5" class="empty-state">There are no bookings available to show.</td>
+                    <td colspan="6" class="empty-state">There are no bookings available to show.</td>
                 </tr>
                 <tr th:each="booking, iteration : ${bookings}" th:if="${iteration.index lt 8}">
                     <td th:text="${booking.getClientFirstName() + ' ' + booking.getClientLastName()}"></td>
+                    <td th:text="${booking.getAssociatedEmailAddress()}"></td>
                     <td class="mono-text" th:text="${booking.getID()}"></td>
                     <td th:text="${booking.getBookingServicesToBeProvided()}"></td>
                     <td>

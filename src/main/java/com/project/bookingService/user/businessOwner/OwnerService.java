@@ -2,6 +2,8 @@ package com.project.bookingService.user.businessOwner;
 
 import com.project.bookingService.config.authentication.AuthRequestDTO;
 import com.project.bookingService.config.authentication.JWTUtility;
+import com.project.bookingService.config.email_service.EmailSender;
+import com.project.bookingService.config.email_service.RecipientDTO;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
 import jakarta.servlet.http.Cookie;
@@ -31,15 +33,17 @@ public class OwnerService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final JWTUtility jwtUtility;
     private final AuthenticationManager authenticationManager;
+    private final EmailSender sender;
 
     @Value("${jwt.expiration.ms}")
     private int expiration;
 
-    public OwnerService(OwnerRepository ownerRepository, @Lazy PasswordEncoder passwordEncoder, JWTUtility jwtUtility,@Lazy AuthenticationManager authenticationManager) {
+    public OwnerService(OwnerRepository ownerRepository, @Lazy PasswordEncoder passwordEncoder, JWTUtility jwtUtility, @Lazy AuthenticationManager authenticationManager, EmailSender emailSender) {
         this.ownerRepository = ownerRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtility = jwtUtility;
         this.authenticationManager = authenticationManager;
+        this.sender = emailSender;
     }
 
     @Override
@@ -108,7 +112,17 @@ public class OwnerService implements UserDetailsService {
         newOwner.setTypeOfBusiness(requestObject.getTypeOfBusiness());
         newOwner.setBusinessAddress(requestObject.getOwnerBusinessAddress());
 
-        return ownerRepository.save(newOwner);
+        Owner savedOwner = ownerRepository.save(newOwner);
+
+        if (savedOwner.getEmailAddress() != null && !savedOwner.getEmailAddress().isEmpty()) { // Has to be a valid owner entity
+            RecipientDTO recipient = new RecipientDTO();
+            recipient.setMessageBody("You have successfully registered your account at fastBooking.");
+            recipient.setSubject("Thank you for choosing fastBooking!");
+            recipient.setRecipient("springtest67@gmail.com");
+            System.out.println(sender.sendMail(recipient));
+        }
+
+        return savedOwner;
     }
 
     @Transactional
