@@ -153,7 +153,7 @@ public class OwnerService implements UserDetailsService {
         fetchedOwner.setLastName(requestObject.getLastName());
         fetchedOwner.setEmailAddress(requestObject.getEmailAddress());
         fetchedOwner.setPaymentMethod(requestObject.getPaymentMethod());
-        fetchedOwner.setPassword(requestObject.getPassword());
+        fetchedOwner.setPassword(passwordEncoder.encode(requestObject.getPassword()));
         fetchedOwner.setAccountStatus(requestObject.getAccountStatus());
         fetchedOwner.setTypeOfBusiness(requestObject.getTypeOfBusiness());
         fetchedOwner.setBusinessAddress(requestObject.getOwnerBusinessAddress());

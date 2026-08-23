@@ -1,5 +1,6 @@
 package com.project.bookingService.user.businessOwner;
 
+import com.project.bookingService.config.email_service.EmailSender;
 import com.project.bookingService.organization.Organization;
 import com.project.bookingService.organization.OrganizationCreationDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,9 @@ class OwnerServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private EmailSender sender; // Without this the registerOwner method throws a null exception
 
     @InjectMocks
     private OwnerService ownerService;
