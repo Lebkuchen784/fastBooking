@@ -258,7 +258,7 @@ public class OrganizationService {
         if (newBooking.getAssociatedEmailAddress() != null && !newBooking.getAssociatedEmailAddress().isEmpty()) {
             RecipientDTO recipient = new RecipientDTO();
             
-            String orgName = organization.getBusinessName() != null ? organization.getBusinessName() : "our organization";
+            String orgName = organization.getBusinessName();
             String subject = "Appointment Confirmation: " + orgName;
             
             java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' HH:mm");
@@ -283,7 +283,7 @@ public class OrganizationService {
                     formattedDate,
                     newBooking.getBookingDurationInMinutes(),
                     newBooking.getBookingServicesToBeProvided(),
-                    organization.getBusinessAddress() != null ? organization.getBusinessAddress() : "Not specified"
+                    organization.getBusinessAddress()
             );
             
             recipient.setSubject(subject);
