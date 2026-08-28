@@ -49,9 +49,11 @@
                         <span th:text="|${#temporals.format(booking.getBookingDateAndTime(), 'HH:mm')} - ${#temporals.format(booking.getBookingDateAndTime().plusMinutes(booking.getBookingDurationInMinutes()), 'HH:mm')}|"></span>
                     </td>
                     <td>
-                        <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid"
+                        <span th:if="${booking.getBookingIsPaid() == null}" class="status-text-blue-cash"
+                        th:text="'CASH'"></span>
+                        <span th:if="${booking.getBookingIsPaid != null && booking.getBookingIsPaid()}" class="status-text-green-isPaid"
                               th:text="'COMPLETED'"></span>
-                        <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid"
+                        <span th:if="${booking.getBookingIsPaid != null && !booking.getBookingIsPaid()}" class="status-text-red-isNotPaid"
                               th:text="'PENDING'"></span>
                     </td>
                 </tr>

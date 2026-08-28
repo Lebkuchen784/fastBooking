@@ -47,6 +47,10 @@
                            onblur="if(!this.value) this.type='text'" class="login-form" type="text"
                            placeholder="Booking date and time" required>
                 </label>
+                <label class="login-checkbox-label">
+                    <span>Check this box if you want to pay later in cash:</span>
+                    <input id="payingInCash" type="checkbox">
+                </label>
                 <div style="display:flex; justify-content:center; padding-bottom: 0.5rem; transform: translateY(10%)">
                     <button id="addBookingButton" type="button" class="registerButton"
                             th:organizationId="${organizationId}" onclick="addBooking(this)">Submit
@@ -109,7 +113,7 @@
             bookingDateAndTime: document.getElementById('bookingDateAndTime').value,
             bookingDurationInMinutes: document.getElementById('bookingDurationInMinutes').value,
             bookingServicesProvided: document.getElementById('bookingServicesProvided').value,
-            bookingIsPaid: true
+            bookingIsPaid: document.getElementById('payingInCash').checked ? null : false
         };
 
         let bookingResponse;
@@ -143,12 +147,13 @@
     }
 
     function fillTestData() {
-            document.getElementById('clientFirstName').value = 'JoeClient';
-            document.getElementById('clientLastName').value = 'MamaClient';
-            document.getElementById('associatedEmailAddress').value = 'joemamaClient@gmail.com';
-            document.getElementById('bookingDateAndTime').value = '2026-08-18T13:00';
-            document.getElementById('bookingDurationInMinutes').value = 30;
-            document.getElementById('bookingServicesProvided').value = 'Premium service';
+        document.getElementById('clientFirstName').value = 'JoeClient';
+        document.getElementById('clientLastName').value = 'MamaClient';
+        document.getElementById('associatedEmailAddress').value = 'springtest67@gmail.com';
+        document.getElementById('bookingDateAndTime').value = '2026-08-18T13:00';
+        document.getElementById('bookingDurationInMinutes').value = 30;
+        document.getElementById('bookingServicesProvided').value = 'Premium service';
+        document.getElementById('payingInCash').checked = true;
     }
 </script>
 </body>

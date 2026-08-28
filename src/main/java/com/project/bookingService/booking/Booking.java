@@ -16,8 +16,8 @@ import java.util.Objects;
 @Table(name="booking")
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ID;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String ID;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="organization_id")
@@ -25,7 +25,7 @@ public class Booking {
     private Organization organization;
 
     @Column(name="is_paid")
-    private Boolean bookingIsPaid;
+    private Boolean bookingIsPaid = null;
 
     @Column(name="date_and_time")
     private LocalDateTime bookingDateAndTime;

@@ -24,7 +24,6 @@ public class Owner implements UserDetails, CredentialsContainer {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String ID;
 
-    // Specifying the column name is not necessary
     @Column(name="first_name")
     private String firstName;
 
@@ -72,7 +71,6 @@ public class Owner implements UserDetails, CredentialsContainer {
         return this.firstName + " " + this.lastName + ", " + this.emailAddress;
     }
 
-    // Security stuff
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(); // Don't need any, I only have "owner"

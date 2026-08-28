@@ -13,10 +13,18 @@
 <body>
 <header class="dashboard-header" style="position: relative;">
     <h1>Dashboard</h1>
-    <form th:action="@{/logout}" method="post" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%);">
+    <form th:action="@{/logout}" method="post"
+          style="position: absolute; left: 0; top: 50%; transform: translateY(-50%);">
         <button type="submit" class="button">Log out</button>
     </form>
-    <button type="button" class="button" id="addMockData" th:ownerId="${organization.getOwner().getID()}" onclick="addMockData(this)"
+    <button type="button" class="deleteAccbutton" id="delete-account-button"
+            th:ownerId="${organization.getOwner().getID()}"
+            onclick="deleteAccount(this)"
+            style="position: absolute; right: 10%; top: 50%; transform: translateY(-50%);">
+        Delete account
+    </button>
+    <button type="button" class="button" id="addMockData" th:ownerId="${organization.getOwner().getID()}"
+            onclick="addMockData(this)"
             style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">Add mock data
     </button>
 </header>
@@ -50,9 +58,13 @@
                         <span th:text="|${#temporals.format(booking.getBookingDateAndTime(), 'HH:mm')} - ${#temporals.format(booking.getBookingDateAndTime().plusMinutes(booking.getBookingDurationInMinutes()), 'HH:mm')}|"></span>
                     </td>
                     <td>
-                        <span th:if="${booking.getBookingIsPaid()}" class="status-text-green-isPaid"
+                        <span th:if="${booking.getBookingIsPaid() == null}" class="status-text-blue-cash"
+                              th:text="'CASH'"></span>
+                        <span th:if="${booking.getBookingIsPaid != null && booking.getBookingIsPaid()}"
+                              class="status-text-green-isPaid"
                               th:text="'COMPLETED'"></span>
-                        <span th:if="${!booking.getBookingIsPaid()}" class="status-text-red-isNotPaid"
+                        <span th:if="${booking.getBookingIsPaid != null && !booking.getBookingIsPaid()}"
+                              class="status-text-red-isNotPaid"
                               th:text="'PENDING'"></span>
                     </td>
                 </tr>
@@ -61,7 +73,8 @@
         </div>
 
         <div class="table-actions" th:if="${bookings != null and bookings.size() > 7}">
-            <a th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=0)}" class="button">Show all bookings</a>
+            <a th:href="@{/owners/{ownerId}/all-bookings(ownerId=${owner.ID}, page=0)}" class="button">Show all
+                bookings</a>
         </div>
     </main>
 
@@ -69,31 +82,59 @@
         <span class="empty-state-left-little-padding">No data available for the organization.</span>
     </aside>
     <aside class="dashboard-card sidebar" th:if="${organization != null}">
-        <h2>Organization details</h2>
-        <ul class="org-details-list">
+        <div class="header-container">
+            <h2>
+                Organization details
+            </h2>
+            <div>
+                <button id="edit-org-button" class="button">Edit</button>
+                <button id="save-org-button" class="button" th:data-owner-id="${organization.getOwner().getID()}"
+                        style="display: none;">
+                    Save
+                </button>
+                <button id="cancel-editing-button" class="button"
+                        style="display: none; width: 39px; height: 39px; border-radius: 50%; padding: 0; align-items: center; justify-content: center;">
+                    ❌
+                </button>
+            </div>
+        </div>
+        <ul class="org-details-list" id="org-details-list">
             <li>
                 <strong>Name</strong>
-                <span th:text="${organization.getBusinessName()}"></span>
+                <span class="view-mode" th:text="${organization.getBusinessName()}"></span>
+                <input class="edit-mode login-form" style="display: none; padding: 0.25rem 0.5rem; margin-top: 0.25rem;"
+                       name="businessName" type="text" th:value="${organization.getBusinessName()}">
             </li>
             <li>
                 <strong>Description</strong>
-                <span th:text="${organization.getBusinessDescription()}"></span>
+                <span class="view-mode" th:text="${organization.getBusinessDescription()}"></span>
+                <input class="edit-mode login-form" style="display: none; padding: 0.25rem 0.5rem; margin-top: 0.25rem;"
+                       name="businessDescription" type="text" th:value="${organization.getBusinessDescription()}">
             </li>
             <li>
                 <strong>Address</strong>
-                <span th:text="${organization.getBusinessAddress()}"></span>
+                <span class="view-mode" th:text="${organization.getBusinessAddress()}"></span>
+                <input class="edit-mode login-form" style="display: none; padding: 0.25rem 0.5rem; margin-top: 0.25rem;"
+                       name="businessAddress" type="text" th:value="${organization.getBusinessAddress()}">
             </li>
             <li>
                 <strong>Employees</strong>
-                <span th:text="${organization.getBusinessNumberOfEmployees()}"></span>
+                <span class="view-mode" th:text="${organization.getBusinessNumberOfEmployees()}"></span>
+                <input class="edit-mode login-form" style="display: none; padding: 0.25rem 0.5rem; margin-top: 0.25rem;"
+                       name="businessNumberOfEmployees" type="number"
+                       th:value="${organization.getBusinessNumberOfEmployees()}">
             </li>
             <li>
                 <strong>Opening Hours</strong>
-                <span th:text="${organization.getBusinessOpeningHour()}"></span>
+                <span class="view-mode" th:text="${organization.getBusinessOpeningHour()}"></span>
+                <input class="edit-mode login-form" style="display: none; padding: 0.25rem 0.5rem; margin-top: 0.25rem;"
+                       name="businessOpeningHour" type="time" th:value="${organization.getBusinessOpeningHour()}">
             </li>
             <li>
                 <strong>Closing Hours</strong>
-                <span th:text="${organization.getBusinessClosingHour()}"></span>
+                <span class="view-mode" th:text="${organization.getBusinessClosingHour()}"></span>
+                <input class="edit-mode login-form" style="display: none; padding: 0.25rem 0.5rem; margin-top: 0.25rem;"
+                       name="businessClosingHour" type="time" th:value="${organization.getBusinessClosingHour()}">
             </li>
             <li>
                 <strong>Owner details</strong>
@@ -102,7 +143,10 @@
             </li>
             <li>
                 <strong>Client access link</strong>
-                <span class="mono-text" style="color: #58a6ff" th:text="'bookAppointment/' + ${organization.getID()}"></span>
+                <a th:href='|http://localhost:8080/bookAppointment/${organization.getID()}|'>
+                    <span class="mono-text" style="color: #58a6ff"
+                          th:text="'bookAppointment/' + ${organization.getID()}"></span>
+                </a>
             </li>
         </ul>
     </aside>
@@ -118,12 +162,12 @@
         button.textContent = 'Working...';
 
         try {
-        const response = await fetch(`/organizations/${ownerId}/generateMockBookings`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+            const response = await fetch(`/organizations/${ownerId}/generateMockBookings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
             if (response.ok) {
                 button.textContent = 'Success';
@@ -141,6 +185,105 @@
             button.textContent = 'Add mock data';
         }
     }
+
+    async function deleteAccount() {
+        const confirmed = window.confirm('Are you certain you want to delete your account? This cannot be undone.');
+        if (!confirmed) {
+            return;
+        }
+
+        const deleteButton = document.getElementById('delete-account-button');
+        deleteButton.disabled = true;
+        deleteButton.textContent = 'Working...';
+
+        const ownerId = deleteButton.getAttribute('ownerId');
+
+        try {
+            const response = await fetch(`/owners/remove`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: ownerId
+            });
+
+            if (response.ok) {
+                deleteButton.textContent = 'Success';
+                deleteButton.style.backgroundColor = '#28a745';
+                await new Promise(resolve => setTimeout(resolve, 500));
+                window.location.href = '/';
+            } else {
+                window.alert('Something went wrong: ' + response.status);
+                deleteButton.disabled = false;
+                deleteButton.textContent = 'Delete account';
+            }
+        } catch (e) {
+            window.alert('Network error.');
+            deleteButton.disabled = false;
+            deleteButton.textContent = 'Delete account';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // AI was used to help write this
+        const editButton = document.getElementById('edit-org-button');
+        const saveButton = document.getElementById('save-org-button');
+        const cancelButton = document.getElementById('cancel-editing-button');
+        const list = document.getElementById('org-details-list');
+
+        if (!editButton || !saveButton || !list) return;
+
+        function toggleEditMode(isEditing) {
+            editButton.style.display = isEditing ? 'none' : 'inline-block';
+            saveButton.style.display = isEditing ? 'inline-block' : 'none';
+            cancelButton.style.display = isEditing ? 'inline-block' : 'none';
+
+            list.querySelectorAll('.view-mode').forEach(el => el.style.display = isEditing ? 'none' : 'inline-block');
+            list.querySelectorAll('.edit-mode').forEach(el => el.style.display = isEditing ? 'inline-block' : 'none');
+        }
+
+        editButton.addEventListener('click', () => toggleEditMode(true));
+
+        cancelButton.addEventListener('click', () => toggleEditMode(false));
+
+        saveButton.addEventListener('click', async () => {
+            const updatedData = {};
+            const inputs = list.querySelectorAll('.edit-mode');
+            const ownerId = saveButton.getAttribute('data-owner-id');
+
+            inputs.forEach(input => {
+                updatedData[input.name] = input.value;
+            });
+
+            saveButton.disabled = true;
+            saveButton.textContent = 'Saving...';
+
+            try {
+                const response = await fetch(`/organizations/${ownerId}/updateOrg`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+
+                if (response.ok) {
+                    inputs.forEach(input => {
+                        const viewSpan = input.closest('li').querySelector('.view-mode');
+                        viewSpan.textContent = input.value;
+                    });
+                    toggleEditMode(false);
+                } else {
+                    window.alert('Failed to update organization details: ' + response.status);
+                }
+            } catch (e) {
+                window.alert('Network error while saving details.');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = 'Save';
+            }
+        });
+    });
 </script>
 </body>
 </html>

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -91,6 +92,31 @@ public class WebController {
         mav.addObject("organization", organizationService.getOrganizationByOwnerId(ownerId));
         mav.addObject("bookingsPage", bookingsPage);
         mav.addObject("searchQueryName", searchQueryName);
+        return mav;
+    }
+
+    @GetMapping("/cancel-appointment/{bookingId}")
+    ModelAndView cancelAppointment(@PathVariable String bookingId) {
+        ModelAndView mav = new ModelAndView("cancel-appointment");
+        Optional<Booking> booking = organizationService.getBookingById(bookingId);
+        if (booking.isPresent()) {
+            mav.addObject("booking", booking.get());
+        } else {
+            mav.addObject("notFound", true);
+        }
+        return mav;
+    }
+
+    @PostMapping("/cancel-appointment/{bookingId}")
+    ModelAndView cancelAppointmentHandling(@PathVariable String bookingId) {
+        ModelAndView mav = new ModelAndView("cancel-appointment");
+        Optional<Booking> booking = organizationService.getBookingById(bookingId);
+        if (booking.isPresent()) {
+            organizationService.removeBookingFromOrg(booking.get().getOrganization().getID(), bookingId);
+            mav.addObject("success", true);
+        } else {
+            mav.addObject("notFound", true);
+        }
         return mav;
     }
 }

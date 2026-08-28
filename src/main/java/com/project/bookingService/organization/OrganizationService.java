@@ -128,6 +128,46 @@ public class OrganizationService {
         return bookings;
     }
 
+    @Transactional
+    public Boolean removeBookingFromOrg(String organizationId, String bookingId) {
+        if (organizationId == null || bookingId == null || organizationId.trim().isEmpty() || bookingId.trim().isEmpty()) {
+            return false;
+        }
+
+        Optional<Organization> organizationOptional = organizationRepository.findById(organizationId);
+        if (organizationOptional.isEmpty()) {
+            System.out.println("Organization does not exist: " + organizationId);
+            return false;
+        }
+
+        Organization organization = organizationOptional.get();
+
+        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        if (bookingOptional.isEmpty()) {
+            System.out.println("Booking does not exist: " + bookingId);
+            return false;
+        }
+
+        Booking booking = bookingOptional.get();
+
+        if (booking.getOrganization() == null || !booking.getOrganization().getID().equals(organizationId)) {
+            System.out.println("Booking does not belong to the specified organization.");
+            return false;
+        }
+        
+        organization.getBookings().remove(booking);
+        bookingRepository.delete(booking);
+        
+        return true;
+    }
+
+    public Optional<Booking> getBookingById(String bookingId) {
+        if (bookingId == null || bookingId.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        return bookingRepository.findById(bookingId);
+    }
+
     public Page<Booking> searchMethodByName(String ownerId, String name, Pageable pageable) {
     Optional<Owner> owner = ownerRepository.findById(ownerId);
 
@@ -252,6 +292,8 @@ public class OrganizationService {
         newBooking.setClientLastName(requestObject.clientLastName());
         newBooking.setAssociatedEmailAddress(requestObject.associatedEmailAddress());
 
+        newBooking = bookingRepository.save(newBooking);
+
         organization.getBookings().add(newBooking);
         organizationRepository.save(organization);
 
@@ -263,8 +305,10 @@ public class OrganizationService {
             
             java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy 'at' HH:mm");
             String formattedDate = newBooking.getBookingDateAndTime().format(formatter);
+
+            String bookingIsPaidInCash = newBooking.getBookingIsPaid() == null ? "Yes" : "No"; // null stands for cash payment
             
-            String message = String.format(
+            String emailMessage = String.format(
                     """
                             Dear %s %s,
                             
@@ -275,6 +319,10 @@ public class OrganizationService {
                             - Duration: %d minutes
                             - Services: %s
                             - Location: %s
+                            - Paying in cash? %s
+                            
+                            To cancel this appointment, please click the link below:
+                            http://localhost:8080/cancel-appointment/%s
                             
                             We look forward to seeing you!""",
                     newBooking.getClientFirstName(),
@@ -283,11 +331,13 @@ public class OrganizationService {
                     formattedDate,
                     newBooking.getBookingDurationInMinutes(),
                     newBooking.getBookingServicesToBeProvided(),
-                    organization.getBusinessAddress()
+                    organization.getBusinessAddress(),
+                    bookingIsPaidInCash,
+                    newBooking.getID()
             );
             
             recipient.setSubject(subject);
-            recipient.setMessageBody(message);
+            recipient.setMessageBody(emailMessage);
             recipient.setRecipient(newBooking.getAssociatedEmailAddress());
             System.out.println(sender.sendMail(recipient));
         }

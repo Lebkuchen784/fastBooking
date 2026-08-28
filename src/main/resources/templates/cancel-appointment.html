@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fastBooking: Cancel appointment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<header class="dashboard-header">
+    <h1>Cancel your appointment</h1>
+</header>
+
+<div class="login-container" style="max-width: 600px; text-align: center;">
+    <main class="dashboard-card">
+        <div th:if="${notFound}">
+            <h2 class="dashboard-header" style="color: #f85149; border-bottom: none; margin-bottom: 1rem;">Error</h2>
+            <p>This booking could not be found or has already been cancelled.</p>
+        </div>
+
+        <div th:if="${success}">
+            <h2 class="dashboard-header" style="color: #3fb950; border-bottom: none; margin-bottom: 1rem;">Success</h2>
+            <p>Your booking has been successfully cancelled.</p>
+        </div>
+
+        <div th:if="${booking != null}">
+            <p style="margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.8;">
+                You are about to cancel your appointment with:<br>
+                <strong th:text="${booking.getOrganization().getBusinessName()}"></strong><br>
+                on:<br>
+                <strong><span th:text="${#temporals.format(booking.getBookingDateAndTime(), 'dd-MM-yyyy')}"></span> at <span th:text="${#temporals.format(booking.getBookingDateAndTime(), 'HH:mm')}"></span></strong><br><br>
+                Do you wish to proceed?
+            </p>
+            
+            <form th:action="@{/cancel-appointment/{id}(id=${booking.getID()})}" method="post">
+                <button type="submit" class="registerButton">Yes</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

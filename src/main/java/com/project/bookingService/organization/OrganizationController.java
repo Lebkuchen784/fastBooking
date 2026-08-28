@@ -2,6 +2,7 @@ package com.project.bookingService.organization;
 
 import com.project.bookingService.booking.Booking;
 import com.project.bookingService.booking.BookingCreationDTO;
+import com.project.bookingService.booking.RandomDataGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,9 @@ import java.util.Set;
 public class OrganizationController {
 
     private final OrganizationService organizationService;
-    private final com.project.bookingService.config.RandomDataGenerator randomDataGenerator;
+    private final RandomDataGenerator randomDataGenerator;
 
-    public OrganizationController(OrganizationService organizationService, com.project.bookingService.config.RandomDataGenerator randomDataGenerator) {
+    public OrganizationController(OrganizationService organizationService, RandomDataGenerator randomDataGenerator) {
         this.organizationService = organizationService;
         this.randomDataGenerator = randomDataGenerator;
     }
@@ -63,6 +64,18 @@ public class OrganizationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @DeleteMapping("/{organizationId}/bookings/{bookingId}")
+    public ResponseEntity<Booking> removeBookingFromOrg(
+            @PathVariable String organizationId,
+            @PathVariable String bookingId
+    ) {
+        if (organizationService.removeBookingFromOrg(organizationId, bookingId)) {
+            return ResponseEntity.status(HttpStatus.FOUND).body(null);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping("/{owner_id}")

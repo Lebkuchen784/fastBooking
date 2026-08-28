@@ -41,7 +41,7 @@ public class OwnerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @PostMapping("/remove")
+    @DeleteMapping("/remove")
     public ResponseEntity<Void> remove(@RequestBody String ownerId) {
         ownerService.removeOwner(ownerId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

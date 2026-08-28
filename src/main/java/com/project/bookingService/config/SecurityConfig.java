@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/client").permitAll()
                         .requestMatchers("/bookAppointment/**").permitAll()
+                        .requestMatchers("/cancel-appointment/**").permitAll()
                         .anyRequest().authenticated()
                 )
                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

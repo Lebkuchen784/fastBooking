@@ -82,6 +82,21 @@ body {
     flex-direction: column;
 }
 
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Pushes the header to the left and buttons to the right */
+    align-items: center; /* Vertically aligns them on the same level */
+    margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-card .header-container h2 {
+    margin: 0; /* Removes default heading margins for perfect alignment */
+    padding: 0;
+    border: none;
+}
+
 .login-container { max-width: 640px; }
 .register-container { max-width: 1100px; }
 
@@ -168,6 +183,24 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
+}
+
+.login-checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+}
+
+.login-checkbox-label input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--accent-color);
 }
 
 .dashboard-card {
@@ -301,6 +334,29 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     color: var(--bg-color);
 }
 
+.deleteAccbutton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    color: var(--text-main);
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.deleteAccbutton:hover {
+    background-color: #f85149;
+    border-color: var(--border-color);
+    color: var(--bg-color);
+}
+
 .registerButton {
     display: inline-flex;
     align-items: center;
@@ -332,6 +388,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 
 .status-text {
     font-weight: 500;
+}
+
+.status-text-blue-cash {
+    font-weight: 500;
+    color: #58a6ff;
 }
 
 .status-text-green-isPaid {

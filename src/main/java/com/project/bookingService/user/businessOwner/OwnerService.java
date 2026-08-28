@@ -118,7 +118,7 @@ public class OwnerService implements UserDetailsService {
             RecipientDTO recipient = new RecipientDTO();
             recipient.setMessageBody("You have successfully registered your account at fastBooking.");
             recipient.setSubject("Thank you for choosing fastBooking!");
-            recipient.setRecipient("springtest67@gmail.com");
+            recipient.setRecipient(savedOwner.getEmailAddress());
             System.out.println(sender.sendMail(recipient));
         }
 

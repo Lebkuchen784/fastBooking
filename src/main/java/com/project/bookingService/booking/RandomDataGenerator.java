@@ -1,7 +1,5 @@
-package com.project.bookingService.config;
+package com.project.bookingService.booking;
 
-import com.project.bookingService.booking.Booking;
-import com.project.bookingService.booking.BookingRepository;
 import com.project.bookingService.organization.Organization;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,7 @@ public class RandomDataGenerator {
     };
     private static final int[] DURATIONS = {30, 45, 60};
 
-    private static final String emailForAll = "something@gmail.com";
+    private static final String EMAIL_FOR_ALL = "something@gmail.com";
 
     private final BookingRepository bookingRepository;
     private final RandomGenerator random = RandomGenerator.getDefault();
@@ -42,7 +40,7 @@ public class RandomDataGenerator {
     @Transactional
     public void createBookings(Organization organization) {
         List<Booking> bookings = new ArrayList<>(BOOKING_COUNT);
-        LocalDate firstBookingDate = LocalDate.now().plusDays(3);
+        LocalDate firstBookingDate = LocalDate.now().plusDays(3); // X days from today
 
         for (int index = 0; index < BOOKING_COUNT; index++) {
             int dayOffset = index / BOOKINGS_PER_DAY;
@@ -58,10 +56,24 @@ public class RandomDataGenerator {
             booking.setBookingDateAndTime(
                     firstBookingDate.plusDays(dayOffset).atTime(8 + (slotIndex * 2), 0)
             );
-            booking.setAssociatedEmailAddress(emailForAll);
+            booking.setAssociatedEmailAddress(EMAIL_FOR_ALL);
             bookings.add(booking);
         }
+
+        bookings = addCashOptionForBookingIsPaidRandomly(bookings);
         bookingRepository.saveAll(bookings);
+    }
+
+    private List<Booking> addCashOptionForBookingIsPaidRandomly(List<Booking> bookings) {
+        List<Booking> copyList;
+        copyList = bookings;
+
+        for (Booking eachBooking : copyList) {
+            if (random.nextBoolean()) {
+                eachBooking.setBookingIsPaid(null); // null means cash only
+            }
+        }
+        return copyList;
     }
 
     private String randomElement(String[] values) {
