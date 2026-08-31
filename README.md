@@ -1,16 +1,16 @@
 # Online Appointment Management System: fastBooking
 
-A streamlined, dual-sided web application designed to help business owners manage bookings effortlessly while offering customers a frictionless, account-free scheduling experience.
+A straight-forward, dual-sided web application designed to help business owners manage bookings effortlessly while offering customers a frictionless, account-free scheduling experience.
 
-<img width="2536" height="1418" alt="image" src="https://github.com/user-attachments/assets/bd9281ef-15a0-4ff4-8eaa-90555588b5c0" />
+<img width="2879" height="1668" alt="screenshot" src="https://github.com/user-attachments/assets/00ae86af-9565-406a-979d-a244422204db" />
 
 ## Motivation
 
 Managing appointments should not be a hassle for small business owners, nor should booking one require customers to jump through registration hoops. 
 
 This project bridges that gap by providing:
-1. **Business owners** with an intuitive dashboard to set up services and manage schedules.
-2. **Customers** with a fast, zero-friction booking experience directly through a shared link.
+1. **Business owners** with an intuitive dashboard to go through and manage bookings.
+2. **Customers** with a fast, zero-friction booking experience directly through a shared link, requiring no account creation.
 
 ---
 
@@ -24,9 +24,8 @@ This project bridges that gap by providing:
 
 ### Customer Experience
 - **Frictionless Booking:** No account creation or login required.
-- **Service Selection:** Easily browse available services provided by the business.
 - **Interactive Calendar:** Pick an available date and time slot in real time.
-- **Instant Confirmation:** Get immediate visual confirmation upon completing a booking.
+- **Instant Confirmation:** Get immediate Email confirmation upon completing a booking along with a cancellation link.
 
 ---
 
@@ -71,6 +70,4 @@ This application is built using a modern Java tech stack, incorporating batch pr
 ## Future Roadmap
 
 - [ ] **Staff Management:** Allow owners to assign specific team members to services and schedules.
-- [ ] **Notifications & Reminders:** Automated email confirmations and notifications for upcoming appointments.
-- [ ] **Calendar Integration:** Sync with Google Calendar, iCal, and Outlook.
 - [ ] **Custom Branding:** Allow business owners to customize colors and logos on their booking page.
