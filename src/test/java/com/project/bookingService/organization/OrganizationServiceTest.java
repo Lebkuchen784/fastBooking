@@ -161,7 +161,7 @@ class OrganizationServiceTest {
         when(bookingRepository.findById("booking-123")).thenReturn(Optional.of(mockBooking));
         
         assertTrue(organizationService.removeBookingFromOrg("org-123", "booking-123"));
-        verify(bookingRepository, times(1)).delete(mockBooking);
+        assertTrue(organizationService.getBookingById("booking-123").orElseThrow().getHasBeenCancelled());
     }
 
     @Test
