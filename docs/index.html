@@ -1,5 +1,5 @@
 <!--
-    This page was AI generated.
+    This page was mostly AI-generated.
 -->
 
 <!DOCTYPE html>
@@ -11,14 +11,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-gray-100 font-sans antialiased">
-    
     <!-- Navigation -->
     <nav class="bg-gray-900 border-b border-gray-800 py-4 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="font-bold text-2xl text-blue-400">fastBooking</div>
+            <button onclick="topFunction()" id="goToTop" title="Go to top">Go back to the top</button>
             <div class="space-x-4">
                 <a href="#features" class="text-gray-300 hover:text-blue-400 transition">Features</a>
-                <a href="https://github.com/ec-mentors/project-module-Lebkuchen784" class="text-gray-300 hover:text-blue-400 transition font-semibold">GitHub Repo</a>
+                <a href="#journey" class="text-gray-300 hover:text-blue-400 transition">Learning journey</a>
             </div>
         </div>
     </nav>
@@ -66,7 +66,7 @@
         <div class="hero-overlay"></div>
         
         <div class="hero-content max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-5xl font-extrabold mb-6">Booking made blazingly fast.</h1>
+            <h1 class="text-5xl font-extrabold mb-6">Booking made fast.</h1>
             <p class="text-xl text-blue-200 mb-10 text-shadow">
                 A secure and scalable service for login-free appointment-booking for clients and managing said appointments as business owners. Powered by Spring Boot.
             </p>
@@ -85,19 +85,19 @@
                 <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 hover:border-blue-500 transition duration-300">
                     <div class="text-blue-400 text-4xl mb-4">🛡️</div>
                     <h3 class="text-xl font-bold text-white mb-2">Secure Authentication</h3>
-                    <p class="text-gray-400">Built-in JWT token management, encrypted passwords, and secure endpoint access using Spring Security.</p>
+                    <p class="text-gray-400">Built-in JWT token management (HTTP-Only), encrypted passwords, and secure endpoint access using Spring Security.</p>
                 </div>
                 <!-- Feature 2 -->
                 <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 hover:border-blue-500 transition duration-300">
                     <div class="text-blue-400 text-4xl mb-4">🏢</div>
                     <h3 class="text-xl font-bold text-white mb-2">Organization Management</h3>
-                    <p class="text-gray-400">Business owners can seamlessly register, manage their organizations, and track working hours.</p>
+                    <p class="text-gray-400">Business owners can seamlessly register, manage their organizations, and search through the database.</p>
                 </div>
                 <!-- Feature 3 -->
                 <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 hover:border-blue-500 transition duration-300">
                     <div class="text-blue-400 text-4xl mb-4">✉️</div>
                     <h3 class="text-xl font-bold text-white mb-2">Automated Emails</h3>
-                    <p class="text-gray-400">Integrated email service for sending welcome messages and notifications directly to your clients.</p>
+                    <p class="text-gray-400">Integrated email service for sending welcome messages to the business owners and appointment confirmations to their clients.</p>
                 </div>
             </div>
         </div>
@@ -113,29 +113,26 @@
                 <span class="px-6 py-2 bg-gray-800 text-gray-300 font-medium rounded-full shadow-sm border border-gray-700 hover:border-gray-500 transition">Hibernate & JPA</span>
                 <span class="px-6 py-2 bg-gray-800 text-gray-300 font-medium rounded-full shadow-sm border border-gray-700 hover:border-gray-500 transition">PostgreSQL</span>
                 <span class="px-6 py-2 bg-gray-800 text-gray-300 font-medium rounded-full shadow-sm border border-gray-700 hover:border-gray-500 transition">JUnit 5 & Mockito</span>
-                <span class="px-6 py-2 bg-gray-800 text-gray-300 font-medium rounded-full shadow-sm border border-gray-700 hover:border-gray-500 transition">HTTP-Only JWT</span>
+                <span class="px-6 py-2 bg-gray-800 text-gray-300 font-medium rounded-full shadow-sm border border-gray-700 hover:border-gray-500 transition">HTTP-Only JSON Web Tokens</span>
             </div>
         </div>
     </section>
 
     <section id="journey" class="py-20 bg-gray-900">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center text-white mb-12">Hurdles throughout:</h2>
+        <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">Learning journey:</h2>
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
                 <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 hover:border-blue-500 transition duration-300">
-                    <h3 class="text-xl font-bold text-white mb-2">Example 1</h3>
-                    <p class="text-gray-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <h3 class="text-xl font-bold text-white mb-2">JWT Authentication</h3>
+                    <p class="text-gray-400">Authentication by itself was an interesting topic to dive into. <br><br>I found that <span class="text-blue-400 font-semibold">JSON Web Tokens (JWTs)</span> are a modern, <span class="text-blue-400 font-semibold">stateless</span> way of doing authentication where the server/database do not save the user's authentication state internally and that authentication is handled on the client's side. <br><br>The challenging part was figuring out how to incorporate the JWT configuration and general spring authentication into my code. <br>The service class used for your users has to implement <span class="text-blue-400 font-semibold">UserDetailsService</span>, which then means your user class has to implement <span class="text-blue-400 font-semibold">UserDetails</span>, after the implementation and configuration, only then Spring has a way to go through your repository and check if provided login data is correct. <br><br> The JWT implementation itself is a lot of boiler plate code that you need to know where to include. The choice of <span class="text-blue-400 font-semibold">HTTP-Only cookies</span> was for improved security, specifically against <span class="text-blue-400 font-semibold">XSS (cross site scripting)</span> attacks where malicious JS code can read browser cookies and steal them using javascript.</p>
                 </div>
-                <!-- Feature 2 -->
                 <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 hover:border-blue-500 transition duration-300">
-                    <h3 class="text-xl font-bold text-white mb-2">Example 2</h3>
-                    <p class="text-gray-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <h3 class="text-xl font-bold text-white mb-2">Frontend</h3>
+                    <p class="text-gray-400">I had little experience with frontend development before, so working with raw HTML, JavaScript, and <span class="text-blue-400 font-semibold">Thymeleaf</span> was new to me. <br><br> I found that Thymeleaf uses a special syntax, namely wrapping statements in <span class="text-blue-400 font-semibold">||</span>, which allows you to mix strings and variables without the typical string concatenation. <br><br> The frontend integration itself required a good amount of trial and error, trying to figure out how to pass IDs and things from the frontend to the backend. <span class="text-blue-400 font-semibold">Thymeleaf</span> makes your life as a frontend developer much easier especially with the integrated loops.</p>
                 </div>
-                <!-- Feature 3 -->
                 <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 hover:border-blue-500 transition duration-300">
-                    <h3 class="text-xl font-bold text-white mb-2">Example 3</h3>
-                    <p class="text-gray-400">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <h3 class="text-xl font-bold text-white mb-2">PostgreSQL</h3>
+                    <p class="text-gray-400">Placeholder <br><br>Placeholder <br>Placeholder <span class="text-blue-400 font-semibold">Placeholder </span> Placeholder  <span class="text-blue-400 font-semibold">Placeholder</span> Placeholder <code>Placeholder </code> Placeholder <br><br> Placeholder <span class="text-blue-400 font-semibold">Placeholder</span> Placeholder <span class="text-blue-400 font-semibold">Placeholder</span></p>
                 </div>
             </div>
         </div>
@@ -143,8 +140,28 @@
 
     <!-- Footer -->
     <footer class="bg-black text-center py-8">
-        <p class="text-gray-500">&copy; 2026 fastBooking. Something something reserved.</p>
+        <p class="text-gray-500">&copy; 2026 fastBooking. Zero rights reserved.</p>
     </footer>
 
+    <script>
+        let goToTop = document.getElementById("goToTop");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 360 || document.documentElement.scrollTop > 360) {
+                goToTop.style.display = "block";
+            } else {
+                goToTop.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+    </script>
 </body>
 </html>
