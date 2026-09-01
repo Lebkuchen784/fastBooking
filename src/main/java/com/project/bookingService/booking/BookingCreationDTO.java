@@ -7,5 +7,6 @@ public record BookingCreationDTO(
         String bookingServicesProvided,
         String clientFirstName,
         String clientLastName,
-        String associatedEmailAddress) {
+        String associatedEmailAddress,
+        Boolean hasBeenCancelled) {
 }

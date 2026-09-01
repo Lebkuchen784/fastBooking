@@ -77,7 +77,7 @@ class OrganizationServiceTest {
         orgCreationDTO.setBusinessOpeningHour("08:00");
         orgCreationDTO.setBusinessClosingHour("18:00");
 
-        bookingCreationDTO = new BookingCreationDTO(false, 30, "2026-08-18T10:00", "Haircut", "Joe", "Mama", "joe@mama.com");
+        bookingCreationDTO = new BookingCreationDTO(false, 30, "2026-08-18T10:00", "Haircut", "Joe", "Mama", "joe@mama.com", false);
     }
 
     @Test

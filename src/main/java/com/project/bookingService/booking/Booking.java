@@ -48,6 +48,9 @@ public class Booking {
     @Transient
     private Boolean errorFlag = false;
 
+    @Column(name="hasBeenCancelled")
+    private Boolean hasBeenCancelled;
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Booking booking)) return false;

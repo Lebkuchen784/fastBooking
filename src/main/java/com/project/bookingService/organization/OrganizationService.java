@@ -154,9 +154,9 @@ public class OrganizationService {
             System.out.println("Booking does not belong to the specified organization.");
             return false;
         }
-        
-        organization.getBookings().remove(booking);
-        bookingRepository.delete(booking);
+
+        booking.setHasBeenCancelled(true);
+        bookingRepository.save(booking);
         
         return true;
     }
@@ -291,6 +291,7 @@ public class OrganizationService {
         newBooking.setClientFirstName(requestObject.clientFirstName());
         newBooking.setClientLastName(requestObject.clientLastName());
         newBooking.setAssociatedEmailAddress(requestObject.associatedEmailAddress());
+        newBooking.setHasBeenCancelled(false);
 
         newBooking = bookingRepository.save(newBooking);
 

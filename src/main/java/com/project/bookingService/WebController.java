@@ -99,7 +99,7 @@ public class WebController {
     ModelAndView cancelAppointment(@PathVariable String bookingId) {
         ModelAndView mav = new ModelAndView("cancel-appointment");
         Optional<Booking> booking = organizationService.getBookingById(bookingId);
-        if (booking.isPresent()) {
+        if (booking.isPresent() && !booking.get().getHasBeenCancelled()) {
             mav.addObject("booking", booking.get());
         } else {
             mav.addObject("notFound", true);
