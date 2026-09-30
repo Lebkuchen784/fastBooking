@@ -1,7 +1,7 @@
 # Online Appointment Management System: fastBooking
 
-#  Aus Datenschutzgründen im Zusammenhang mit öffentlichen Repositories kürze ich meinen Namen für die Identifikation durch Recruiter auf meine Initialen ab:
-#  Author: N. C.
+##  Aus Datenschutzgründen im Zusammenhang mit öffentlichen Repositories kürze ich meinen Namen für die Identifikation durch Recruiter auf meine Initialen ab:
+##  Author: N. C.
 
 A straight-forward, dual-sided web application designed to help business owners manage bookings effortlessly while offering customers a frictionless, account-free scheduling experience.
 
